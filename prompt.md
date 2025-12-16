@@ -1,39 +1,43 @@
 # HRMS Backend Feature Prompts (Laravel)
 
-> **Tech Stack:** Laravel 11 + PHP 8.2 + MySQL + Sanctum + Laratrust
+> **Tech Stack:** Laravel 11 + PHP 8.2 + MySQL + Sanctum + Spatie Permission
 >
-> **Reference:** Based on demo project analysis (packages/workdo/Hrm)
+> **Reference:** Demo project patterns (NOT code) - understand features, write original
 >
-> **Pattern:** Create original code, take reference but DON'T copy directly
+> **CRITICAL:** Use ORIGINAL variable names, table names, method names - NO copying from demo
+>
+> **Naming Convention:** Use clear, descriptive names (e.g., `staff_member` not `employee`, `office_location` not `branch`)
 
 ---
 
 ## Prompt Set 1: Project Setup & Authentication
 
-### Features: Laravel Installation, Sanctum Auth, Laratrust Setup, Login Flow
+### Features: Laravel Installation, Sanctum Auth, Spatie Permission Setup, Login Flow
 
 ```
 Set up Laravel 11 HRMS backend project with authentication.
+IMPORTANT: Write ORIGINAL code - only take CONCEPT reference from demo, NO variable/table names.
 
 **Feature 1: Laravel Project Setup**
-- Install Laravel 11: laravel new workdohrms
+- Install Laravel 11: composer create-project laravel/laravel hrms
 - Configure MySQL database in .env
-- Install dependencies: Sanctum, Laratrust
+- Install dependencies: Sanctum, Spatie Permission
 - Configure app timezone and locale
+- Create base folder structure
 
 **Feature 2: Sanctum Authentication**
 - php artisan install:api (Sanctum)
-- Configure User model with HasApiTokens
-- Create AuthController with login, register, logout
-- Password hashing with bcrypt
-- API token generation
+- Configure User model with HasApiTokens, HasRoles (Spatie)
+- Create AccessController with signIn, signUp, signOut
+- Password hashing with Hash::make()
+- Personal access token generation
 
-**Feature 3: Laratrust Roles/Permissions**
-- php artisan laratrust:setup
-- Create roles: super-admin, company-admin, hr-manager, employee
-- Define permissions pattern: {module} {action}
-- Create Permission seeder with 100+ permissions
-- RoleSeeder with default roles
+**Feature 3: Spatie Permission Setup**
+- composer require spatie/laravel-permission
+- php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+- Create roles: administrator, manager, hr_officer, staff_member
+- Define abilities: view_staff, create_staff, edit_staff, delete_staff
+- AccessSeeder with default roles and abilities
 
 **Feature 4: Login Flow**
 - Login controller: validate email/password, issue token
@@ -54,143 +58,147 @@ POST /api/auth/reset-password
 
 ## Prompt Set 2: Organization Structure
 
-### Features: Branch, Department, Designation, DocumentType
+### Features: Office Locations, Divisions, Job Titles, File Categories
 
 ```
 Implement organization structure management for HRMS.
+IMPORTANT: Use ORIGINAL table/model names - NOT demo names.
 
-**Feature 1: Branch Management**
-- Migration: branches (name, address, phone, email, status, workspace, created_by)
-- Model: Branch with fillable, relationships
-- BranchController: index, create, store, edit, update, destroy
-- Resource route: Route::resource('branch', BranchController::class)
+**Feature 1: Office Location Management**
+- Migration: office_locations (title, address, contact_phone, contact_email, is_active, tenant_id, author_id)
+- Model: OfficeLocation with fillable, relationships
+- OfficeLocationController: index, create, store, edit, update, destroy
+- Resource route: Route::resource('office-locations', OfficeLocationController::class)
 - Blade views: index, create, edit
 
-**Feature 2: Department Management**
-- Migration: departments (name, branch_id, description, status, workspace, created_by)
-- Model: Department belongsTo Branch
-- DepartmentController with standard CRUD
-- getDepartment endpoint for AJAX filtering by branch
+**Feature 2: Division Management**
+- Migration: divisions (title, office_location_id, notes, is_active, tenant_id, author_id)
+- Model: Division belongsTo OfficeLocation
+- DivisionController with standard CRUD
+- fetchDivisions endpoint for AJAX filtering by location
 
-**Feature 3: Designation Management**
-- Migration: designations (name, department_id, description, status, workspace, created_by)
-- Model: Designation belongsTo Department
-- DesignationController with CRUD
-- getDesignation endpoint for AJAX filtering
+**Feature 3: Job Title Management**
+- Migration: job_titles (title, division_id, notes, is_active, tenant_id, author_id)
+- Model: JobTitle belongsTo Division
+- JobTitleController with CRUD
+- fetchJobTitles endpoint for AJAX filtering
 
-**Feature 4: Document Types**
-- Migration: document_types (name, description, is_required, status)
-- Model: DocumentType
-- DocumentTypeController with CRUD
-- Used when uploading employee documents
+**Feature 4: File Categories**
+- Migration: file_categories (title, notes, is_mandatory, is_active)
+- Model: FileCategory
+- FileCategoryController with CRUD
+- Used when uploading staff member files
 ```
 
 ---
 
-## Prompt Set 3: Employee Management
+## Prompt Set 3: Staff Member Management
 
-### Features: Employee CRUD, Personal Info, Employment Details, Employee Documents
+### Features: Staff Member CRUD, Personal Info, Employment Details, Staff Files
 
 ```
-Implement comprehensive Employee management module.
+Implement comprehensive Staff Member management module.
+IMPORTANT: Use ORIGINAL field names - conceptually similar to demo but unique.
 
-**Feature 1: Employee Model (Complex - 40+ fields)**
-- Migration with fields from demo:
-  - user_id, name, email, phone, dob, gender, address
-  - passport_country, passport, country, state, city, zipcode
-  - employee_id, biometric_emp_id
-  - branch_id, department_id, designation_id, company_doj
-  - account_holder_name, account_number, bank_name, branch_location
-  - salary_type, salary, is_active, workspace, created_by
-- Model relationships: belongsTo User, Branch, Department, Designation
+**Feature 1: StaffMember Model (Complex - 40+ fields)**
+- Migration: staff_members with fields:
+  - user_id, full_name, personal_email, mobile_number, birth_date, gender, home_address
+  - nationality, passport_number, country_code, region, city_name, postal_code
+  - staff_code, biometric_id
+  - office_location_id, division_id, job_title_id, hire_date
+  - bank_account_name, bank_account_number, bank_name, bank_branch
+  - compensation_type, base_salary, employment_status, tenant_id, author_id
+- Model relationships: belongsTo User, OfficeLocation, Division, JobTitle
 
-**Feature 2: EmployeeController**
-- index: list with DataTables, filters (branch, department)
-- create: form with branch/department/designation dropdowns
-- store: validate, create User + Employee, assign role
-- show: full employee profile view
-- edit/update: update employee details
-- destroy: soft delete or deactivate
-- grid: grid view alternative to table
+**Feature 2: StaffMemberController**
+- index: list with datatable, filters (location, division)
+- create: form with location/division/job_title dropdowns  
+- store: validate, create User + StaffMember, attach role
+- show: full profile view
+- edit/update: update details
+- destroy: soft delete or mark inactive
+- gridView: card view alternative
 
-**Feature 3: Employee Documents**
-- Migration: employee_documents (employee_id, document_type_id, document_path)
-- Upload documents during employee creation
-- View/download documents on employee profile
-- Delete documents
+**Feature 3: Staff Files**
+- Migration: staff_files (staff_member_id, file_category_id, file_path)
+- Upload files during staff creation
+- View/download files on profile
+- Remove files
 
 **Feature 4: AJAX Helpers**
-- getDepartment: POST, filter departments by branch_id
-- getDesignation: POST, filter designations by department_id
-- Used in employee create/edit forms for cascading dropdowns
+- fetchDivisions: POST, filter by office_location_id  
+- fetchJobTitles: POST, filter by division_id
+- Used in create/edit forms for cascading dropdowns
 ```
 
 ---
 
-## Prompt Set 4: Employee Lifecycle - Awards & Promotions
+## Prompt Set 4: Staff Lifecycle - Recognition & Advancement
 
-### Features: Award Types, Awards, Promotions, Transfers
+### Features: Recognition Categories, Recognition Records, Role Upgrades, Location Transfers
 
 ```
-Implement employee recognition and career progression.
+Implement staff recognition and career progression.
+IMPORTANT: Original naming - NOT demo variable names.
 
-**Feature 1: Award Types**
-- Migration: award_types (name, description, status, workspace, created_by)
-- Model: AwardType
-- AwardTypeController with CRUD
-- Examples: Employee of Month, Best Performer, Innovation Award
+**Feature 1: Recognition Categories**
+- Migration: recognition_categories (title, notes, is_active, tenant_id, author_id)
+- Model: RecognitionCategory
+- RecognitionCategoryController with CRUD
+- Examples: Star Performer, Team Champion, Innovation Leader
 
-**Feature 2: Awards**
-- Migration: awards (employee_id, award_type_id, date, gift, description, workspace, created_by)
-- Model: Award belongsTo Employee, AwardType
-- AwardController with CRUD
-- Award history per employee
+**Feature 2: Recognition Records**  
+- Migration: recognition_records (staff_member_id, recognition_category_id, recognition_date, reward, notes, tenant_id, author_id)
+- Model: RecognitionRecord belongsTo StaffMember, RecognitionCategory
+- RecognitionRecordController with CRUD
+- History per staff member
 
-**Feature 3: Promotions**
-- Migration: promotions (employee_id, designation_id, promotion_title, promotion_date, description, workspace, created_by)
-- Model: Promotion belongsTo Employee, Designation
-- PromotionController with CRUD
-- Update employee designation on promotion
+**Feature 3: Role Upgrades (Promotions)**
+- Migration: role_upgrades (staff_member_id, new_job_title_id, upgrade_title, effective_date, notes, tenant_id, author_id)
+- Model: RoleUpgrade belongsTo StaffMember, JobTitle
+- RoleUpgradeController with CRUD
+- Update staff member job_title on upgrade
 
-**Feature 4: Transfers**
-- Migration: transfers (employee_id, branch_id, department_id, transfer_date, description, workspace, created_by)
-- Model: Transfer belongsTo Employee, Branch, Department
-- TransferController with CRUD
-- Update employee branch/department on transfer
+**Feature 4: Location Transfers**
+- Migration: location_transfers (staff_member_id, new_office_location_id, new_division_id, effective_date, notes, tenant_id, author_id)
+- Model: LocationTransfer belongsTo StaffMember, OfficeLocation, Division
+- LocationTransferController with CRUD
+- Update staff member location/division on transfer
 ```
 
 ---
 
-## Prompt Set 5: Employee Lifecycle - Warnings & Terminations
+## Prompt Set 5: Staff Lifecycle - Discipline & Exit
 
-### Features: Warnings, Termination Types, Terminations, Resignations
+### Features: Discipline Notes, Exit Categories, Offboarding, Voluntary Exits
 
 ```
-Implement disciplinary actions and employee exits.
+Implement disciplinary actions and staff exits.
+IMPORTANT: Original naming - unique table/field names.
 
-**Feature 1: Warnings**
-- Migration: warnings (employee_id, warning_to_user_id, subject, warning_date, description, workspace, created_by)
-- Model: Warning belongsTo Employee
-- WarningController with CRUD
-- Warning history tracking
+**Feature 1: Discipline Notes (Warnings)**
+- Migration: discipline_notes (staff_member_id, issued_to_user_id, subject, issue_date, details, tenant_id, author_id)
+- Model: DisciplineNote belongsTo StaffMember
+- DisciplineNoteController with CRUD
+- History tracking
 
-**Feature 2: Termination Types**
-- Migration: termination_types (name, description, status)
-- Model: TerminationType
-- TerminationTypeController with CRUD
-- Examples: Voluntary, Involuntary, Retirement
+**Feature 2: Exit Categories (Termination Types)**
+- Migration: exit_categories (title, notes, is_active)
+- Model: ExitCategory  
+- ExitCategoryController with CRUD
+- Examples: Voluntary, Involuntary, Retirement, Contract End
 
-**Feature 3: Terminations**
-- Migration: terminations (employee_id, termination_type_id, termination_date, notice_date, description, workspace, created_by)
-- Model: Termination belongsTo Employee, TerminationType
-- TerminationController with CRUD
-- Update employee status on termination
+**Feature 3: Offboarding (Terminations)**
+- Migration: offboardings (staff_member_id, exit_category_id, exit_date, notice_date, details, tenant_id, author_id)
+- Model: Offboarding belongsTo StaffMember, ExitCategory
+- OffboardingController with CRUD
+- Update staff status on offboarding
 
-**Feature 4: Resignations**
-- Migration: resignations (employee_id, notice_date, resignation_date, reason, status, workspace, created_by)
-- Model: Resignation belongsTo Employee
-- Status: Pending, Approved, Rejected
-- ResignationController with CRUD and approval workflow
+**Feature 4: Voluntary Exits (Resignations)**
+- Migration: voluntary_exits (staff_member_id, notice_date, exit_date, reason, approval_status, tenant_id, author_id)
+- Model: VoluntaryExit belongsTo StaffMember
+- Status: pending, approved, declined
+- VoluntaryExitController with CRUD and approval workflow
 ```
 
 ---
@@ -757,11 +765,18 @@ Implement seeding and testing infrastructure.
 
 ## Usage Instructions
 
-1. **Start with Prompt Set 1** to initialize Laravel project
+1. **Start with Prompt Set 1** to initialize Laravel project with Spatie Permission
 2. **Progress sequentially** through each phase
-3. **Reference demo code** for patterns, but write original implementations
-4. **Test each module** before moving to next
-5. **Use `php artisan` commands** for migrations and testing
+3. **CRITICAL: Write ORIGINAL code** - understand concepts from demo, use unique names
+4. **Key naming changes applied:**
+   - `employee` → `staff_member`
+   - `branch` → `office_location`  
+   - `department` → `division`
+   - `designation` → `job_title`
+   - `workspace` → `tenant_id`
+   - `created_by` → `author_id`
+5. **Test each module** before moving to next
+6. **Use `php artisan` commands** for migrations and testing
 
 ---
 
@@ -770,11 +785,11 @@ Implement seeding and testing infrastructure.
 | Phase | Prompt Sets | Features |
 |-------|-------------|----------|
 | Project Setup | 1-2 | 8 |
-| Employee Management | 3-6 | 16 |
-| Leave & Attendance | 7-8 | 8 |
-| Payroll System | 9-13 | 20 |
+| Staff Management | 3-6 | 16 |
+| Time Off & Attendance | 7-8 | 8 |
+| Compensation System | 9-13 | 20 |
 | Communication | 14-16 | 12 |
 | Admin & Reports | 17-18 | 8 |
 | Advanced | 19-22 | 16 |
 
-**Total: 22 Prompt Sets | 88 Features (Laravel)**
+**Total: 22 Prompt Sets | 88 Features (Laravel + Spatie Permission)**
