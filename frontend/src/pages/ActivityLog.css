@@ -1,0 +1,205 @@
+/* ============================================
+   Activity Log Page Styles
+   ============================================ */
+
+.activity-log-page {
+    max-width: 1200px;
+}
+
+/* Filters Card */
+.filters-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.filters-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filters-row .search-box {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filters-row select,
+.filters-row input[type="date"] {
+    min-width: 140px;
+}
+
+/* Activity Timeline */
+.activity-timeline {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.activity-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: calc(1rem + 28px);
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+
+.activity-item:last-child::before {
+    display: none;
+}
+
+.activity-indicator {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.activity-indicator.blue {
+    background: #3b82f6;
+}
+
+.activity-indicator.green {
+    background: #10b981;
+}
+
+.activity-indicator.orange {
+    background: #f97316;
+}
+
+.activity-indicator.red {
+    background: #ef4444;
+}
+
+.activity-indicator.purple {
+    background: #8b5cf6;
+}
+
+.activity-indicator.gray {
+    background: #6b7280;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.action-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.action-badge.blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.action-badge.green {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.action-badge.orange {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+}
+
+.action-badge.red {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.action-badge.purple {
+    background: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6;
+}
+
+.action-badge.gray {
+    background: rgba(107, 114, 128, 0.15);
+    color: #6b7280;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.activity-description {
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+}
+
+.activity-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+.activity-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.page-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+    }
+
+    .filters-row .search-box,
+    .filters-row select,
+    .filters-row input {
+        width: 100%;
+    }
+}

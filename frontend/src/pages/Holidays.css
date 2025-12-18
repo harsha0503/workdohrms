@@ -1,0 +1,132 @@
+/* ============================================
+   Holidays Page Styles
+   ============================================ */
+
+.holidays-page {
+    max-width: 1400px;
+}
+
+/* Calendar Header */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.month-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.month-nav h2 {
+    min-width: 200px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Calendar Container */
+.calendar-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: var(--border);
+}
+
+.calendar-weekday {
+    background: var(--gray-100);
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.calendar-day {
+    background: var(--bg-card);
+    min-height: 100px;
+    padding: 0.5rem;
+    position: relative;
+}
+
+.calendar-day.empty {
+    background: var(--gray-50);
+}
+
+.calendar-day.weekend {
+    background: var(--gray-50);
+}
+
+.calendar-day.holiday {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+}
+
+.day-number {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.calendar-day.weekend .day-number {
+    color: var(--danger);
+}
+
+.calendar-day.holiday .day-number {
+    color: var(--danger);
+}
+
+.holiday-label {
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--danger);
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--gray-100);
+    padding: 0.25rem;
+    border-radius: var(--radius);
+}
+
+.view-toggle .btn.active {
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .calendar-day {
+        min-height: 60px;
+        padding: 0.25rem;
+    }
+
+    .holiday-label {
+        font-size: 0.5rem;
+        padding: 0.125rem 0.25rem;
+    }
+
+    .calendar-weekday {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.6875rem;
+    }
+}

@@ -1,0 +1,229 @@
+/* ============================================
+   Staff Members Page - Premium Design
+   ============================================ */
+
+.staff-page {
+    max-width: 1400px;
+}
+
+/* Mini Stats Grid */
+.stats-grid.mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stats-grid.mini .stat-card {
+    padding: 1rem 1.25rem;
+}
+
+.stats-grid.mini .stat-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.stats-grid.mini .stat-value {
+    font-size: 1.25rem;
+}
+
+/* Employee Cell in Table */
+.employee-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.employee-cell .avatar {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.employee-cell strong {
+    display: block;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.employee-cell .emp-id {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   Employees Grid View
+   ============================================ */
+
+.employees-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.employee-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: all var(--transition);
+}
+
+.employee-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.employee-card-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 1.5rem 1rem;
+    background: linear-gradient(135deg, var(--primary-light), rgba(42, 161, 152, 0.05));
+}
+
+.employee-card-header .avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.5rem;
+    border: 3px solid var(--bg-card);
+    box-shadow: var(--shadow-md);
+}
+
+.status-dot {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-card);
+}
+
+.status-dot.active {
+    background: var(--success);
+}
+
+.status-dot.inactive {
+    background: var(--danger);
+}
+
+.employee-card-body {
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+.employee-card-body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    color: var(--text-primary);
+}
+
+.employee-card-body .designation {
+    font-size: 0.875rem;
+    color: var(--primary);
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+}
+
+.employee-card-body .department {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin: 0 0 0.25rem;
+}
+
+.employee-card-body .email {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.employee-card-footer {
+    padding: 0.75rem 1.5rem 1.25rem;
+    text-align: center;
+}
+
+.employee-card-footer .btn {
+    width: 100%;
+}
+
+/* ============================================
+   Pagination
+   ============================================ */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.page-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-badge);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.page-btn:hover {
+    background: var(--bg-card);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.page-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* ============================================
+   Filter Panel (placeholder for future)
+   ============================================ */
+
+.filter-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+    .stats-grid.mini {
+        grid-template-columns: 1fr;
+    }
+
+    .employees-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+    }
+}

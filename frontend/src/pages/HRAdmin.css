@@ -1,0 +1,43 @@
+.hr-admin-page {
+    padding: 0;
+}
+
+.tabs-scroll {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tabs-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.tabs-scroll .tabs {
+    display: inline-flex;
+    min-width: max-content;
+    margin-bottom: 0;
+}
+
+.tabs-scroll .tab {
+    white-space: nowrap;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+}
+
+.employee-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.truncate {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-card.purple .stat-icon {
+    background: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6;
+}

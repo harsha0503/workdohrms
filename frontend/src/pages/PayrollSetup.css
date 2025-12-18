@@ -1,0 +1,25 @@
+.payroll-setup-page {
+    padding: 0;
+}
+
+.tabs-scroll {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tabs-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.tabs-scroll .tabs {
+    display: inline-flex;
+    min-width: max-content;
+    margin-bottom: 0;
+}
+
+.tabs-scroll .tab {
+    white-space: nowrap;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+}

@@ -1,0 +1,50 @@
+/* ============================================
+   Leave Requests Page Styles
+   ============================================ */
+
+.leave-page {
+    max-width: 1600px;
+}
+
+.leave-page .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.leave-page .stat-card {
+    cursor: pointer;
+}
+
+.leave-page .stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.reason-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Form Row */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .leave-page .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .leave-page .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
