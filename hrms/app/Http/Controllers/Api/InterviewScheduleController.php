@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\InterviewSchedule;
-use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,13 +29,13 @@ class InterviewScheduleController extends Controller
             $query->where('scheduled_date', '<=', $request->date_to);
         }
 
-        $interviews = $request->paginate === 'false' 
-            ? $query->get() 
+        $interviews = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $interviews
+            'data' => $interviews,
         ]);
     }
 
@@ -74,16 +73,17 @@ class InterviewScheduleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Interview scheduled successfully',
-            'data' => $interview->load(['application.candidate', 'interviewer'])
+            'data' => $interview->load(['application.candidate', 'interviewer']),
         ], 201);
     }
 
     public function show(InterviewSchedule $interviewSchedule)
     {
         $interviewSchedule->load(['application.candidate', 'application.job', 'interviewer']);
+
         return response()->json([
             'success' => true,
-            'data' => $interviewSchedule
+            'data' => $interviewSchedule,
         ]);
     }
 
@@ -104,7 +104,7 @@ class InterviewScheduleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Interview updated successfully',
-            'data' => $interviewSchedule
+            'data' => $interviewSchedule,
         ]);
     }
 
@@ -114,7 +114,7 @@ class InterviewScheduleController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Interview deleted successfully'
+            'message' => 'Interview deleted successfully',
         ]);
     }
 
@@ -140,7 +140,7 @@ class InterviewScheduleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Feedback submitted successfully',
-            'data' => $interviewSchedule
+            'data' => $interviewSchedule,
         ]);
     }
 
@@ -166,7 +166,7 @@ class InterviewScheduleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Interview rescheduled successfully',
-            'data' => $interviewSchedule
+            'data' => $interviewSchedule,
         ]);
     }
 
@@ -177,14 +177,14 @@ class InterviewScheduleController extends Controller
 
         if ($request->month && $request->year) {
             $query->whereMonth('scheduled_date', $request->month)
-                  ->whereYear('scheduled_date', $request->year);
+                ->whereYear('scheduled_date', $request->year);
         }
 
         $interviews = $query->get();
 
         return response()->json([
             'success' => true,
-            'data' => $interviews
+            'data' => $interviews,
         ]);
     }
 
@@ -197,7 +197,7 @@ class InterviewScheduleController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $interviews
+            'data' => $interviews,
         ]);
     }
 }

@@ -34,7 +34,7 @@ class CandidateAssessmentController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $assessments
+            'data' => $assessments,
         ]);
     }
 
@@ -64,16 +64,17 @@ class CandidateAssessmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Assessment scheduled successfully',
-            'data' => $assessment->load('candidate')
+            'data' => $assessment->load('candidate'),
         ], 201);
     }
 
     public function show(CandidateAssessment $candidateAssessment)
     {
         $candidateAssessment->load(['candidate', 'jobApplication.job', 'assessor']);
+
         return response()->json([
             'success' => true,
-            'data' => $candidateAssessment
+            'data' => $candidateAssessment,
         ]);
     }
 
@@ -98,7 +99,7 @@ class CandidateAssessmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Assessment updated successfully',
-            'data' => $candidateAssessment
+            'data' => $candidateAssessment,
         ]);
     }
 
@@ -108,7 +109,7 @@ class CandidateAssessmentController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Assessment deleted successfully'
+            'message' => 'Assessment deleted successfully',
         ]);
     }
 
@@ -135,7 +136,7 @@ class CandidateAssessmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Assessment completed successfully',
-            'data' => $candidateAssessment
+            'data' => $candidateAssessment,
         ]);
     }
 
@@ -144,7 +145,7 @@ class CandidateAssessmentController extends Controller
         if ($candidateAssessment->status === 'completed') {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot cancel completed assessment'
+                'message' => 'Cannot cancel completed assessment',
             ], 400);
         }
 
@@ -153,7 +154,7 @@ class CandidateAssessmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Assessment cancelled',
-            'data' => $candidateAssessment
+            'data' => $candidateAssessment,
         ]);
     }
 
@@ -166,7 +167,7 @@ class CandidateAssessmentController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $assessments
+            'data' => $assessments,
         ]);
     }
 }

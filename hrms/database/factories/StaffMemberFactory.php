@@ -27,13 +27,13 @@ class StaffMemberFactory extends Factory
             'marital_status' => fake()->randomElement(['single', 'married', 'divorced', 'widowed']),
             'nationality' => fake()->country(),
             'residential_address' => fake()->address(),
-            
+
             // Employment
             'employment_status' => 'active',
             'employment_type' => fake()->randomElement(['full_time', 'part_time', 'contract', 'intern']),
             'hire_date' => fake()->dateTimeBetween('-5 years', 'now'),
             'base_salary' => fake()->randomFloat(2, 30000, 150000),
-            
+
             // Banking
             'bank_account_name' => fake()->name(),
             'bank_account_number' => fake()->bankAccountNumber(),

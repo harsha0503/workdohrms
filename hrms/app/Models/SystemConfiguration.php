@@ -28,7 +28,7 @@ class SystemConfiguration extends Model
             return static::where('config_key', $key)->first();
         });
 
-        if (!$config) {
+        if (! $config) {
             return $default;
         }
 

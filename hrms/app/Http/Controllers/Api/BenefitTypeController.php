@@ -55,7 +55,7 @@ class BenefitTypeController extends Controller
     public function update(Request $request, BenefitType $benefitType)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:benefit_types,title,' . $benefitType->id,
+            'title' => 'sometimes|required|string|max:255|unique:benefit_types,title,'.$benefitType->id,
             'notes' => 'nullable|string',
             'is_taxable' => 'boolean',
             'is_active' => 'boolean',

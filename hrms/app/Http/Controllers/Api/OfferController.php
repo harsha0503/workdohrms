@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Candidate;
 use App\Models\Offer;
 use App\Models\OfferTemplate;
-use App\Models\Candidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,7 +32,7 @@ class OfferController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $offers
+            'data' => $offers,
         ]);
     }
 
@@ -87,25 +87,26 @@ class OfferController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer created successfully',
-            'data' => $offer->load('candidate')
+            'data' => $offer->load('candidate'),
         ], 201);
     }
 
     public function show(Offer $offer)
     {
         $offer->load(['candidate', 'jobPosting', 'template', 'creator']);
+
         return response()->json([
             'success' => true,
-            'data' => $offer
+            'data' => $offer,
         ]);
     }
 
     public function update(Request $request, Offer $offer)
     {
-        if (!in_array($offer->status, ['draft'])) {
+        if (! in_array($offer->status, ['draft'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Can only update draft offers'
+                'message' => 'Can only update draft offers',
             ], 400);
         }
 
@@ -127,7 +128,7 @@ class OfferController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer updated successfully',
-            'data' => $offer
+            'data' => $offer,
         ]);
     }
 
@@ -136,7 +137,7 @@ class OfferController extends Controller
         if ($offer->status === 'accepted') {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete accepted offers'
+                'message' => 'Cannot delete accepted offers',
             ], 400);
         }
 
@@ -144,7 +145,7 @@ class OfferController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Offer deleted successfully'
+            'message' => 'Offer deleted successfully',
         ]);
     }
 
@@ -153,7 +154,7 @@ class OfferController extends Controller
         if ($offer->status !== 'draft') {
             return response()->json([
                 'success' => false,
-                'message' => 'Offer already sent'
+                'message' => 'Offer already sent',
             ], 400);
         }
 
@@ -170,7 +171,7 @@ class OfferController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer sent successfully',
-            'data' => $offer
+            'data' => $offer,
         ]);
     }
 
@@ -179,14 +180,14 @@ class OfferController extends Controller
         if ($offer->status !== 'sent') {
             return response()->json([
                 'success' => false,
-                'message' => 'Can only accept sent offers'
+                'message' => 'Can only accept sent offers',
             ], 400);
         }
 
         if ($offer->expiry_date < now()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Offer has expired'
+                'message' => 'Offer has expired',
             ], 400);
         }
 
@@ -202,7 +203,7 @@ class OfferController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer accepted',
-            'data' => $offer
+            'data' => $offer,
         ]);
     }
 
@@ -211,7 +212,7 @@ class OfferController extends Controller
         if ($offer->status !== 'sent') {
             return response()->json([
                 'success' => false,
-                'message' => 'Can only reject sent offers'
+                'message' => 'Can only reject sent offers',
             ], 400);
         }
 
@@ -227,16 +228,16 @@ class OfferController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer rejected',
-            'data' => $offer
+            'data' => $offer,
         ]);
     }
 
     public function withdraw(Offer $offer)
     {
-        if (!in_array($offer->status, ['draft', 'sent'])) {
+        if (! in_array($offer->status, ['draft', 'sent'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot withdraw this offer'
+                'message' => 'Cannot withdraw this offer',
             ], 400);
         }
 
@@ -245,7 +246,7 @@ class OfferController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer withdrawn successfully',
-            'data' => $offer
+            'data' => $offer,
         ]);
     }
 
@@ -258,7 +259,7 @@ class OfferController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $pending
+            'data' => $pending,
         ]);
     }
 
@@ -271,7 +272,7 @@ class OfferController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $expired
+            'data' => $expired,
         ]);
     }
 }

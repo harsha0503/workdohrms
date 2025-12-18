@@ -39,8 +39,9 @@ class MediaDirectory extends Model
     public function getFullPathAttribute()
     {
         if ($this->parent) {
-            return $this->parent->full_path . '/' . $this->name;
+            return $this->parent->full_path.'/'.$this->name;
         }
+
         return $this->name;
     }
 }

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\MediaFile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class MediaFileController extends Controller
 {
@@ -35,7 +35,7 @@ class MediaFileController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $files
+            'data' => $files,
         ]);
     }
 
@@ -71,17 +71,18 @@ class MediaFileController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => count($uploadedFiles) . ' file(s) uploaded successfully',
-            'data' => $uploadedFiles
+            'message' => count($uploadedFiles).' file(s) uploaded successfully',
+            'data' => $uploadedFiles,
         ], 201);
     }
 
     public function show(MediaFile $mediaFile)
     {
         $mediaFile->load(['directory', 'uploader']);
+
         return response()->json([
             'success' => true,
-            'data' => $mediaFile
+            'data' => $mediaFile,
         ]);
     }
 
@@ -100,7 +101,7 @@ class MediaFileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'File renamed successfully',
-            'data' => $mediaFile
+            'data' => $mediaFile,
         ]);
     }
 
@@ -115,16 +116,16 @@ class MediaFileController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'File deleted successfully'
+            'message' => 'File deleted successfully',
         ]);
     }
 
     public function download(MediaFile $mediaFile)
     {
-        if (!Storage::disk('public')->exists($mediaFile->file_path)) {
+        if (! Storage::disk('public')->exists($mediaFile->file_path)) {
             return response()->json([
                 'success' => false,
-                'message' => 'File not found'
+                'message' => 'File not found',
             ], 404);
         }
 
@@ -147,7 +148,7 @@ class MediaFileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'File moved successfully',
-            'data' => $mediaFile->load('directory')
+            'data' => $mediaFile->load('directory'),
         ]);
     }
 
@@ -169,7 +170,7 @@ class MediaFileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'File shared successfully',
-            'data' => $mediaFile
+            'data' => $mediaFile,
         ]);
     }
 
@@ -182,7 +183,7 @@ class MediaFileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'File unshared successfully',
-            'data' => $mediaFile
+            'data' => $mediaFile,
         ]);
     }
 }

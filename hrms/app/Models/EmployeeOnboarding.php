@@ -39,6 +39,7 @@ class EmployeeOnboarding extends Model
     {
         $totalTasks = $this->template->tasks()->count();
         $completedTasks = $this->taskCompletions()->count();
+
         return $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
     }
 }

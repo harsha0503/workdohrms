@@ -92,7 +92,7 @@ class TaxSlabController extends Controller
         $income = $validated['income'];
         $slab = TaxSlab::active()->forIncome($income)->first();
 
-        if (!$slab) {
+        if (! $slab) {
             return response()->json([
                 'success' => true,
                 'data' => [

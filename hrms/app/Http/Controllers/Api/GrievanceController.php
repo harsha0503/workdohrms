@@ -87,7 +87,7 @@ class GrievanceController extends Controller
         ]);
 
         $updateData = ['status' => $validated['status']];
-        
+
         if ($validated['status'] === 'resolved') {
             $updateData['resolution'] = $validated['resolution'] ?? null;
             $updateData['resolved_date'] = now();
@@ -97,7 +97,7 @@ class GrievanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Grievance status updated to ' . $validated['status'],
+            'message' => 'Grievance status updated to '.$validated['status'],
             'data' => $grievance->fresh(),
         ]);
     }

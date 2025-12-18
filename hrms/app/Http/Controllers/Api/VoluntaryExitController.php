@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\VoluntaryExit;
 use App\Models\StaffMember;
+use App\Models\VoluntaryExit;
 use Illuminate\Http\Request;
 
 class VoluntaryExitController extends Controller
@@ -96,7 +96,7 @@ class VoluntaryExitController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Voluntary exit ' . $validated['action'],
+            'message' => 'Voluntary exit '.$validated['action'],
             'data' => $voluntaryExit->fresh(['staffMember', 'approvedByUser']),
         ]);
     }

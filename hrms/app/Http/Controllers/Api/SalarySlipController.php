@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Salary Slip Controller
- * 
+ *
  * Handles HTTP requests for payroll/salary slip management.
  */
 class SalarySlipController extends Controller
@@ -45,7 +45,7 @@ class SalarySlipController extends Controller
 
             return $this->success($result, 'Salary slips retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve salary slips: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve salary slips: '.$e->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class SalarySlipController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to generate salary slip: ' . $e->getMessage());
+            return $this->serverError('Failed to generate salary slip: '.$e->getMessage());
         }
     }
 
@@ -85,13 +85,13 @@ class SalarySlipController extends Controller
         try {
             $slip = $this->service->findById($id);
 
-            if (!$slip) {
+            if (! $slip) {
                 return $this->notFound('Salary slip not found');
             }
 
             return $this->success($slip, 'Salary slip retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve salary slip: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve salary slip: '.$e->getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ class SalarySlipController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Salary slip not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to mark salary slip as paid: ' . $e->getMessage());
+            return $this->serverError('Failed to mark salary slip as paid: '.$e->getMessage());
         }
     }
 
@@ -139,7 +139,7 @@ class SalarySlipController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to generate salary slips: ' . $e->getMessage());
+            return $this->serverError('Failed to generate salary slips: '.$e->getMessage());
         }
     }
 
@@ -167,7 +167,7 @@ class SalarySlipController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to mark salary slips as paid: ' . $e->getMessage());
+            return $this->serverError('Failed to mark salary slips as paid: '.$e->getMessage());
         }
     }
 
@@ -184,7 +184,7 @@ class SalarySlipController extends Controller
 
             return $this->success($summary, 'Monthly payroll summary retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve monthly summary: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve monthly summary: '.$e->getMessage());
         }
     }
 
@@ -198,7 +198,7 @@ class SalarySlipController extends Controller
 
             return $this->collection($history, 'Salary history retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve salary history: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve salary history: '.$e->getMessage());
         }
     }
 
@@ -212,7 +212,7 @@ class SalarySlipController extends Controller
 
             return $this->success($stats, 'Payroll statistics retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve payroll statistics: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve payroll statistics: '.$e->getMessage());
         }
     }
 
@@ -228,7 +228,7 @@ class SalarySlipController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Salary slip not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to delete salary slip: ' . $e->getMessage());
+            return $this->serverError('Failed to delete salary slip: '.$e->getMessage());
         }
     }
 }

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\HrDocument;
 use App\Models\DocumentAcknowledgment;
+use App\Models\HrDocument;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class HrDocumentController extends Controller
 {
@@ -36,7 +36,7 @@ class HrDocumentController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $documents
+            'data' => $documents,
         ]);
     }
 
@@ -76,14 +76,14 @@ class HrDocumentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Document uploaded successfully',
-            'data' => $document->load('category')
+            'data' => $document->load('category'),
         ], 201);
     }
 
     public function show(HrDocument $hrDocument)
     {
         $hrDocument->load(['category', 'uploader', 'acknowledgments.staffMember']);
-        
+
         // Add acknowledgment stats
         $hrDocument->acknowledgment_stats = [
             'total_acknowledged' => $hrDocument->acknowledgments->count(),
@@ -92,7 +92,7 @@ class HrDocumentController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $hrDocument
+            'data' => $hrDocument,
         ]);
     }
 
@@ -117,7 +117,7 @@ class HrDocumentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Document updated successfully',
-            'data' => $hrDocument
+            'data' => $hrDocument,
         ]);
     }
 
@@ -132,22 +132,22 @@ class HrDocumentController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Document deleted successfully'
+            'message' => 'Document deleted successfully',
         ]);
     }
 
     public function download(HrDocument $hrDocument)
     {
-        if (!Storage::disk('public')->exists($hrDocument->file_path)) {
+        if (! Storage::disk('public')->exists($hrDocument->file_path)) {
             return response()->json([
                 'success' => false,
-                'message' => 'File not found'
+                'message' => 'File not found',
             ], 404);
         }
 
         return Storage::disk('public')->download(
             $hrDocument->file_path,
-            $hrDocument->name . '.' . $hrDocument->file_type
+            $hrDocument->name.'.'.$hrDocument->file_type
         );
     }
 
@@ -155,10 +155,10 @@ class HrDocumentController extends Controller
     {
         $staffMemberId = auth()->user()->staffMember?->id;
 
-        if (!$staffMemberId) {
+        if (! $staffMemberId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Staff member not found'
+                'message' => 'Staff member not found',
             ], 400);
         }
 
@@ -170,7 +170,7 @@ class HrDocumentController extends Controller
         if ($existing) {
             return response()->json([
                 'success' => false,
-                'message' => 'Document already acknowledged'
+                'message' => 'Document already acknowledged',
             ], 400);
         }
 
@@ -185,7 +185,7 @@ class HrDocumentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Document acknowledged successfully',
-            'data' => $acknowledgment
+            'data' => $acknowledgment,
         ]);
     }
 
@@ -198,7 +198,7 @@ class HrDocumentController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $acknowledgments
+            'data' => $acknowledgments,
         ]);
     }
 
@@ -206,10 +206,10 @@ class HrDocumentController extends Controller
     {
         $staffMemberId = auth()->user()->staffMember?->id;
 
-        if (!$staffMemberId) {
+        if (! $staffMemberId) {
             return response()->json([
                 'success' => true,
-                'data' => []
+                'data' => [],
             ]);
         }
 
@@ -223,7 +223,7 @@ class HrDocumentController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $pending
+            'data' => $pending,
         ]);
     }
 }

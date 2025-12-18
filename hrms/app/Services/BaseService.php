@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Base Service Class
- * 
+ *
  * Provides common CRUD operations and utility methods for all services.
  * Each domain service should extend this class and customize as needed.
  */
@@ -60,7 +60,7 @@ abstract class BaseService
         $query = $this->applyFilters($query, $params);
 
         // Apply search
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query = $this->applySearch($query, $params['search']);
         }
 
@@ -71,8 +71,8 @@ abstract class BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -81,7 +81,8 @@ abstract class BaseService
      */
     public function findById(int $id, array $relations = []): ?Model
     {
-        $relations = !empty($relations) ? $relations : $this->defaultRelations;
+        $relations = ! empty($relations) ? $relations : $this->defaultRelations;
+
         return $this->query()->with($relations)->find($id);
     }
 
@@ -90,7 +91,8 @@ abstract class BaseService
      */
     public function findOrFail(int $id, array $relations = []): Model
     {
-        $relations = !empty($relations) ? $relations : $this->defaultRelations;
+        $relations = ! empty($relations) ? $relations : $this->defaultRelations;
+
         return $this->query()->with($relations)->findOrFail($id);
     }
 
@@ -115,6 +117,7 @@ abstract class BaseService
 
         return DB::transaction(function () use ($model, $data) {
             $model->update($data);
+
             return $model->fresh($this->defaultRelations);
         });
     }
@@ -139,10 +142,11 @@ abstract class BaseService
     protected function applyFilters(Builder $query, array $params): Builder
     {
         foreach ($this->filterableFields as $field => $param) {
-            if (!empty($params[$param])) {
+            if (! empty($params[$param])) {
                 $query->where($field, $params[$param]);
             }
         }
+
         return $query;
     }
 
@@ -169,7 +173,7 @@ abstract class BaseService
     {
         $orderBy = $params['order_by'] ?? 'created_at';
         $order = $params['order'] ?? 'desc';
-        
+
         return $query->orderBy($orderBy, $order);
     }
 
@@ -180,6 +184,7 @@ abstract class BaseService
     {
         $query = $this->query()->select($fields);
         $query = $this->applyFilters($query, $params);
+
         return $query->orderBy($fields[1] ?? 'id')->get();
     }
 
@@ -190,6 +195,7 @@ abstract class BaseService
     {
         $query = $this->query();
         $query = $this->applyFilters($query, $params);
+
         return $query->count();
     }
 
@@ -206,7 +212,8 @@ abstract class BaseService
      */
     public function findWhere(array $conditions, array $relations = []): Collection
     {
-        $relations = !empty($relations) ? $relations : $this->defaultRelations;
+        $relations = ! empty($relations) ? $relations : $this->defaultRelations;
+
         return $this->query()->with($relations)->where($conditions)->get();
     }
 
@@ -215,7 +222,8 @@ abstract class BaseService
      */
     public function findFirstWhere(array $conditions, array $relations = []): ?Model
     {
-        $relations = !empty($relations) ? $relations : $this->defaultRelations;
+        $relations = ! empty($relations) ? $relations : $this->defaultRelations;
+
         return $this->query()->with($relations)->where($conditions)->first();
     }
 
@@ -229,6 +237,7 @@ abstract class BaseService
             foreach ($items as $item) {
                 $created->push($this->modelClass::create($item));
             }
+
             return $created;
         });
     }

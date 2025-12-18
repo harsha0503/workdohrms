@@ -25,7 +25,7 @@ class WorkLogResource extends JsonResource
             'working_minutes' => $this->working_minutes,
             'working_hours_formatted' => $this->working_hours_formatted,
             'notes' => $this->notes,
-            
+
             'staff_member' => $this->whenLoaded('staffMember', function () {
                 return [
                     'id' => $this->staffMember->id,
@@ -33,7 +33,7 @@ class WorkLogResource extends JsonResource
                     'full_name' => $this->staffMember->full_name,
                 ];
             }),
-            
+
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

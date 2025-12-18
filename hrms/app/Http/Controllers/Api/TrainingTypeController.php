@@ -17,13 +17,13 @@ class TrainingTypeController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         }
 
-        $types = $request->paginate === 'false' 
-            ? $query->get() 
+        $types = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $types
+            'data' => $types,
         ]);
     }
 
@@ -44,16 +44,17 @@ class TrainingTypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training type created successfully',
-            'data' => $type
+            'data' => $type,
         ], 201);
     }
 
     public function show(TrainingType $trainingType)
     {
         $trainingType->load('programs');
+
         return response()->json([
             'success' => true,
-            'data' => $trainingType
+            'data' => $trainingType,
         ]);
     }
 
@@ -74,7 +75,7 @@ class TrainingTypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training type updated successfully',
-            'data' => $trainingType
+            'data' => $trainingType,
         ]);
     }
 
@@ -84,7 +85,7 @@ class TrainingTypeController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Training type deleted successfully'
+            'message' => 'Training type deleted successfully',
         ]);
     }
 }

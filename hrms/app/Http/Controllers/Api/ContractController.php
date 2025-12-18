@@ -23,6 +23,7 @@ class ContractController extends Controller
         }
 
         $contracts = $query->paginate($request->per_page ?? 15);
+
         return response()->json(['success' => true, 'data' => $contracts]);
     }
 
@@ -42,7 +43,7 @@ class ContractController extends Controller
         }
 
         $data = $request->all();
-        $data['reference_number'] = 'CTR-' . strtoupper(Str::random(8));
+        $data['reference_number'] = 'CTR-'.strtoupper(Str::random(8));
         $data['status'] = 'draft';
 
         $contract = Contract::create($data);
@@ -50,32 +51,35 @@ class ContractController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Contract created',
-            'data' => $contract->load(['staffMember', 'contractType'])
+            'data' => $contract->load(['staffMember', 'contractType']),
         ], 201);
     }
 
     public function show(Contract $contract)
     {
         $contract->load(['staffMember', 'contractType', 'renewals']);
+
         return response()->json(['success' => true, 'data' => $contract]);
     }
 
     public function update(Request $request, Contract $contract)
     {
         $contract->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $contract]);
     }
 
     public function destroy(Contract $contract)
     {
         $contract->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 
     public function renew(Request $request, Contract $contract)
     {
         $validator = Validator::make($request->all(), [
-            'new_end_date' => 'required|date|after:' . $contract->end_date,
+            'new_end_date' => 'required|date|after:'.$contract->end_date,
             'new_salary' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
@@ -103,13 +107,14 @@ class ContractController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Contract renewed',
-            'data' => $contract->load('renewals')
+            'data' => $contract->load('renewals'),
         ]);
     }
 
     public function terminate(Request $request, Contract $contract)
     {
         $contract->update(['status' => 'terminated']);
+
         return response()->json(['success' => true, 'message' => 'Contract terminated', 'data' => $contract]);
     }
 
@@ -117,6 +122,7 @@ class ContractController extends Controller
     {
         $days = $request->days ?? 30;
         $contracts = Contract::expiringSoon($days)->with(['staffMember', 'contractType'])->get();
+
         return response()->json(['success' => true, 'data' => $contracts]);
     }
 
@@ -126,6 +132,7 @@ class ContractController extends Controller
             ->with('contractType')
             ->orderBy('start_date', 'desc')
             ->get();
+
         return response()->json(['success' => true, 'data' => $contracts]);
     }
 }

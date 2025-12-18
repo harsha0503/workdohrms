@@ -39,8 +39,9 @@ class MediaFile extends Model
     public function getFullPathAttribute()
     {
         if ($this->directory) {
-            return $this->directory->full_path . '/' . $this->name;
+            return $this->directory->full_path.'/'.$this->name;
         }
+
         return $this->name;
     }
 

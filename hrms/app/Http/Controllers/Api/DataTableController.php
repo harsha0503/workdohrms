@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\StaffMember;
-use App\Models\WorkLog;
-use App\Models\TimeOffRequest;
 use App\Models\SalarySlip;
+use App\Models\StaffMember;
+use App\Models\TimeOffRequest;
+use App\Models\WorkLog;
 use Illuminate\Http\Request;
 
 class DataTableController extends Controller

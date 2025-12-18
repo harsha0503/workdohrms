@@ -44,7 +44,7 @@ class SalaryAdvanceController extends Controller
 
         $validated['author_id'] = $request->user()->id;
         $validated['status'] = 'active';
-        
+
         // Calculate expected completion date
         if ($validated['monthly_deduction'] > 0) {
             $months = ceil($validated['principal_amount'] / $validated['monthly_deduction']);

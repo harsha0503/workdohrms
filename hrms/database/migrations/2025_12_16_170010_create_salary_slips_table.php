@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slip_reference')->unique();
             $table->string('salary_period'); // Format: YYYY-MM
             $table->decimal('basic_salary', 12, 2);
-            
+
             // Earnings (stored as JSON for flexibility)
             $table->json('benefits_breakdown')->nullable();
             $table->json('incentives_breakdown')->nullable();
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->timestamp('generated_at')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('paid_at')->nullable();
-            
+
             $table->unsignedBigInteger('tenant_id')->nullable();
             $table->unsignedBigInteger('author_id')->nullable();
             $table->timestamps();

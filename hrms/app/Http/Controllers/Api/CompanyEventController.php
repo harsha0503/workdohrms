@@ -49,7 +49,7 @@ class CompanyEventController extends Controller
         $event = CompanyEvent::create(collect($validated)->except('attendee_ids')->toArray());
 
         // Attach attendees if not company-wide
-        if (!($validated['is_company_wide'] ?? true) && !empty($validated['attendee_ids'])) {
+        if (! ($validated['is_company_wide'] ?? true) && ! empty($validated['attendee_ids'])) {
             $event->attendees()->attach($validated['attendee_ids']);
         }
 
@@ -108,8 +108,8 @@ class CompanyEventController extends Controller
         ]);
 
         $staffMember = \App\Models\StaffMember::where('user_id', $request->user()->id)->first();
-        
-        if (!$staffMember) {
+
+        if (! $staffMember) {
             return response()->json([
                 'success' => false,
                 'message' => 'Staff member not found',
@@ -120,7 +120,7 @@ class CompanyEventController extends Controller
             $staffMember->id => [
                 'response' => $validated['response'],
                 'responded_at' => now(),
-            ]
+            ],
         ]);
 
         return response()->json([
@@ -145,7 +145,7 @@ class CompanyEventController extends Controller
         // Events
         $events = CompanyEvent::forDateRange($start, $end)->get()->map(function ($e) {
             return [
-                'id' => 'event_' . $e->id,
+                'id' => 'event_'.$e->id,
                 'title' => $e->title,
                 'start' => $e->event_start->toDateString(),
                 'end' => $e->event_end?->toDateString(),
@@ -158,7 +158,7 @@ class CompanyEventController extends Controller
         $holidays = CompanyHoliday::whereBetween('holiday_date', [$start, $end])
             ->get()->map(function ($h) {
                 return [
-                    'id' => 'holiday_' . $h->id,
+                    'id' => 'holiday_'.$h->id,
                     'title' => $h->title,
                     'start' => $h->holiday_date->toDateString(),
                     'color' => '#dc2626',
@@ -172,8 +172,8 @@ class CompanyEventController extends Controller
             ->with(['staffMember', 'category'])
             ->get()->map(function ($l) {
                 return [
-                    'id' => 'leave_' . $l->id,
-                    'title' => $l->staffMember->full_name . ' - ' . $l->category->title,
+                    'id' => 'leave_'.$l->id,
+                    'title' => $l->staffMember->full_name.' - '.$l->category->title,
                     'start' => $l->start_date->toDateString(),
                     'end' => $l->end_date->toDateString(),
                     'color' => '#f59e0b',

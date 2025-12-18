@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\OfficeLocation;
 use App\Models\Division;
 use App\Models\JobTitle;
+use App\Models\OfficeLocation;
 use App\Models\StaffMember;
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class SampleDataSeeder extends Seeder
 {

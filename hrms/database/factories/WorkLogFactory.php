@@ -18,8 +18,8 @@ class WorkLogFactory extends Factory
     public function definition(): array
     {
         $status = fake()->randomElement(['present', 'present', 'present', 'absent', 'half_day', 'on_leave']);
-        $clockIn = $status === 'present' ? '09:' . str_pad(fake()->numberBetween(0, 30), 2, '0', STR_PAD_LEFT) : null;
-        $clockOut = $status === 'present' ? '18:' . str_pad(fake()->numberBetween(0, 30), 2, '0', STR_PAD_LEFT) : null;
+        $clockIn = $status === 'present' ? '09:'.str_pad(fake()->numberBetween(0, 30), 2, '0', STR_PAD_LEFT) : null;
+        $clockOut = $status === 'present' ? '18:'.str_pad(fake()->numberBetween(0, 30), 2, '0', STR_PAD_LEFT) : null;
 
         return [
             'log_date' => fake()->dateTimeBetween('-30 days', 'now'),

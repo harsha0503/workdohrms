@@ -49,7 +49,7 @@ class PerformanceObjectiveController extends Controller
         $validated['status'] = 'not_started';
         $validated['current_value'] = 0;
         $validated['author_id'] = $request->user()->id;
-        
+
         $objective = PerformanceObjective::create($validated);
 
         return response()->json([
@@ -82,12 +82,12 @@ class PerformanceObjectiveController extends Controller
         ]);
 
         $performanceObjective->current_value = $validated['current_value'];
-        
+
         // Auto-update status
         if ($performanceObjective->status === 'not_started') {
             $performanceObjective->status = 'in_progress';
         }
-        if ($performanceObjective->target_value && 
+        if ($performanceObjective->target_value &&
             $performanceObjective->current_value >= $performanceObjective->target_value) {
             $performanceObjective->status = 'completed';
         }

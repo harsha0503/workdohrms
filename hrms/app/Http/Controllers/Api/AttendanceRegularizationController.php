@@ -35,7 +35,7 @@ class AttendanceRegularizationController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $regularizations
+            'data' => $regularizations,
         ]);
     }
 
@@ -54,10 +54,10 @@ class AttendanceRegularizationController extends Controller
         }
 
         $staffMemberId = auth()->user()->staffMember?->id;
-        if (!$staffMemberId) {
+        if (! $staffMemberId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Staff member not found'
+                'message' => 'Staff member not found',
             ], 400);
         }
 
@@ -85,16 +85,17 @@ class AttendanceRegularizationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Regularization request submitted successfully',
-            'data' => $regularization
+            'data' => $regularization,
         ], 201);
     }
 
     public function show(AttendanceRegularization $attendanceRegularization)
     {
         $attendanceRegularization->load(['staffMember', 'workLog', 'reviewer']);
+
         return response()->json([
             'success' => true,
-            'data' => $attendanceRegularization
+            'data' => $attendanceRegularization,
         ]);
     }
 
@@ -103,7 +104,7 @@ class AttendanceRegularizationController extends Controller
         if ($attendanceRegularization->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only pending requests can be approved'
+                'message' => 'Only pending requests can be approved',
             ], 400);
         }
 
@@ -133,7 +134,7 @@ class AttendanceRegularizationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Regularization request approved',
-            'data' => $attendanceRegularization
+            'data' => $attendanceRegularization,
         ]);
     }
 
@@ -142,7 +143,7 @@ class AttendanceRegularizationController extends Controller
         if ($attendanceRegularization->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only pending requests can be rejected'
+                'message' => 'Only pending requests can be rejected',
             ], 400);
         }
 
@@ -164,7 +165,7 @@ class AttendanceRegularizationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Regularization request rejected',
-            'data' => $attendanceRegularization
+            'data' => $attendanceRegularization,
         ]);
     }
 
@@ -177,7 +178,7 @@ class AttendanceRegularizationController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $pending
+            'data' => $pending,
         ]);
     }
 
@@ -185,10 +186,10 @@ class AttendanceRegularizationController extends Controller
     {
         $staffMemberId = auth()->user()->staffMember?->id;
 
-        if (!$staffMemberId) {
+        if (! $staffMemberId) {
             return response()->json([
                 'success' => true,
-                'data' => []
+                'data' => [],
             ]);
         }
 
@@ -199,7 +200,7 @@ class AttendanceRegularizationController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $requests
+            'data' => $requests,
         ]);
     }
 }

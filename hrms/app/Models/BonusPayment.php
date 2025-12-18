@@ -40,6 +40,7 @@ class BonusPayment extends Model
         if ($this->payment_type === 'percentage') {
             return ($this->amount / 100) * $baseSalary;
         }
+
         return (float) $this->amount;
     }
 }

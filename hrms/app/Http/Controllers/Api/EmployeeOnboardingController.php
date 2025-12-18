@@ -48,7 +48,7 @@ class EmployeeOnboardingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Onboarding assigned successfully',
-            'data' => $onboarding->load(['staffMember', 'template.tasks'])
+            'data' => $onboarding->load(['staffMember', 'template.tasks']),
         ], 201);
     }
 
@@ -56,6 +56,7 @@ class EmployeeOnboardingController extends Controller
     {
         $employeeOnboarding->load(['staffMember', 'template.tasks', 'taskCompletions']);
         $employeeOnboarding->progress = $employeeOnboarding->progress;
+
         return response()->json(['success' => true, 'data' => $employeeOnboarding]);
     }
 
@@ -94,7 +95,7 @@ class EmployeeOnboardingController extends Controller
         // Check if all tasks completed
         $totalTasks = $employeeOnboarding->template->tasks()->count();
         $completedTasks = $employeeOnboarding->taskCompletions()->count();
-        
+
         if ($completedTasks >= $totalTasks) {
             $employeeOnboarding->update(['status' => 'completed']);
         }
@@ -102,7 +103,7 @@ class EmployeeOnboardingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Task completed',
-            'data' => $completion
+            'data' => $completion,
         ]);
     }
 

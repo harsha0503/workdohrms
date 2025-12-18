@@ -27,7 +27,7 @@ class FileCategoryController extends Controller
 
         // Search by title
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         $categories = $request->boolean('paginate', true)
@@ -51,7 +51,7 @@ class FileCategoryController extends Controller
             'is_mandatory' => 'boolean',
             'is_active' => 'boolean',
         ]);
-        
+
         $category = FileCategory::create($validated);
 
         return response()->json([
@@ -78,7 +78,7 @@ class FileCategoryController extends Controller
     public function update(Request $request, FileCategory $fileCategory)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:file_categories,title,' . $fileCategory->id,
+            'title' => 'sometimes|required|string|max:255|unique:file_categories,title,'.$fileCategory->id,
             'notes' => 'nullable|string',
             'is_mandatory' => 'boolean',
             'is_active' => 'boolean',

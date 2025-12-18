@@ -52,6 +52,7 @@ class StaffBenefit extends Model
         if ($this->calculation_type === 'percentage') {
             return ($this->amount / 100) * $baseSalary;
         }
+
         return (float) $this->amount;
     }
 

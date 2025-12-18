@@ -17,13 +17,13 @@ class AssetTypeController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         }
 
-        $assetTypes = $request->paginate === 'false' 
-            ? $query->get() 
+        $assetTypes = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $assetTypes
+            'data' => $assetTypes,
         ]);
     }
 
@@ -44,16 +44,17 @@ class AssetTypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset type created successfully',
-            'data' => $assetType
+            'data' => $assetType,
         ], 201);
     }
 
     public function show(AssetType $assetType)
     {
         $assetType->load('assets');
+
         return response()->json([
             'success' => true,
-            'data' => $assetType
+            'data' => $assetType,
         ]);
     }
 
@@ -74,7 +75,7 @@ class AssetTypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset type updated successfully',
-            'data' => $assetType
+            'data' => $assetType,
         ]);
     }
 
@@ -84,7 +85,7 @@ class AssetTypeController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Asset type deleted successfully'
+            'message' => 'Asset type deleted successfully',
         ]);
     }
 }

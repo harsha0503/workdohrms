@@ -13,6 +13,7 @@ class ContractTypeController extends Controller
     {
         $query = ContractType::withCount('contracts');
         $types = $request->paginate === 'false' ? $query->get() : $query->paginate($request->per_page ?? 15);
+
         return response()->json(['success' => true, 'data' => $types]);
     }
 
@@ -29,6 +30,7 @@ class ContractTypeController extends Controller
         }
 
         $type = ContractType::create($request->all());
+
         return response()->json(['success' => true, 'message' => 'Contract type created', 'data' => $type], 201);
     }
 
@@ -40,12 +42,14 @@ class ContractTypeController extends Controller
     public function update(Request $request, ContractType $contractType)
     {
         $contractType->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $contractType]);
     }
 
     public function destroy(ContractType $contractType)
     {
         $contractType->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 }

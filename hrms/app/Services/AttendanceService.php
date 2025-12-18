@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\WorkLog;
 use App\Models\StaffMember;
+use App\Models\WorkLog;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 /**
  * Attendance Service
- * 
+ *
  * Handles all business logic for attendance/work log management.
  */
 class AttendanceService extends BaseService
@@ -36,22 +36,22 @@ class AttendanceService extends BaseService
         $query = $this->applyFilters($query, $params);
 
         // Date filter
-        if (!empty($params['date'])) {
+        if (! empty($params['date'])) {
             $query->whereDate('work_date', $params['date']);
         }
 
         // Date range filter
-        if (!empty($params['start_date'])) {
+        if (! empty($params['start_date'])) {
             $query->whereDate('work_date', '>=', $params['start_date']);
         }
-        if (!empty($params['end_date'])) {
+        if (! empty($params['end_date'])) {
             $query->whereDate('work_date', '<=', $params['end_date']);
         }
 
         // Month/Year filter
-        if (!empty($params['month']) && !empty($params['year'])) {
+        if (! empty($params['month']) && ! empty($params['year'])) {
             $query->whereMonth('work_date', $params['month'])
-                  ->whereYear('work_date', $params['year']);
+                ->whereYear('work_date', $params['year']);
         }
 
         $query = $this->applyOrdering($query, ['order_by' => 'work_date', 'order' => 'desc']);
@@ -59,8 +59,8 @@ class AttendanceService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -70,7 +70,7 @@ class AttendanceService extends BaseService
     public function clockIn(int $staffMemberId, array $data = []): WorkLog
     {
         $today = now()->toDateString();
-        
+
         // Check if already clocked in today
         $existing = WorkLog::where('staff_member_id', $staffMemberId)
             ->whereDate('work_date', $today)
@@ -96,13 +96,13 @@ class AttendanceService extends BaseService
     public function clockOut(int $staffMemberId, array $data = []): WorkLog
     {
         $today = now()->toDateString();
-        
+
         $workLog = WorkLog::where('staff_member_id', $staffMemberId)
             ->whereDate('work_date', $today)
             ->whereNull('clock_out')
             ->first();
 
-        if (!$workLog) {
+        if (! $workLog) {
             throw new \Exception('No active clock-in found for today');
         }
 
@@ -132,6 +132,7 @@ class AttendanceService extends BaseService
 
             if ($existing) {
                 $existing->update($data);
+
                 return $existing->fresh($this->defaultRelations);
             }
 
@@ -146,7 +147,7 @@ class AttendanceService extends BaseService
     {
         return DB::transaction(function () use ($records) {
             $created = collect();
-            
+
             foreach ($records as $record) {
                 $created->push($this->recordAttendance($record));
             }
@@ -180,8 +181,8 @@ class AttendanceService extends BaseService
             'late' => $late,
             'half_day' => $halfDay,
             'not_marked' => $absent,
-            'attendance_percentage' => $totalEmployees > 0 
-                ? round(($present / $totalEmployees) * 100, 1) 
+            'attendance_percentage' => $totalEmployees > 0
+                ? round(($present / $totalEmployees) * 100, 1)
                 : 0,
         ];
     }
@@ -207,8 +208,8 @@ class AttendanceService extends BaseService
             'late_days' => $records->where('status', 'late')->count(),
             'half_days' => $records->where('status', 'half_day')->count(),
             'total_hours' => $records->sum('total_hours'),
-            'average_hours_per_day' => $records->count() > 0 
-                ? round($records->sum('total_hours') / $records->count(), 2) 
+            'average_hours_per_day' => $records->count() > 0
+                ? round($records->sum('total_hours') / $records->count(), 2)
                 : 0,
         ];
     }
@@ -254,6 +255,7 @@ class AttendanceService extends BaseService
 
         return $employees->map(function ($employee) use ($startDate, $endDate) {
             $summary = $this->getSummaryForDateRange($startDate, $endDate, $employee->id);
+
             return [
                 'employee' => [
                     'id' => $employee->id,
@@ -285,7 +287,7 @@ class AttendanceService extends BaseService
             ->whereDate('work_date', now()->toDateString())
             ->first();
 
-        if (!$workLog) {
+        if (! $workLog) {
             return [
                 'status' => 'not_clocked_in',
                 'clock_in' => null,
@@ -310,7 +312,7 @@ class AttendanceService extends BaseService
         $current = $start->copy();
 
         while ($current <= $end) {
-            if (!$current->isWeekend()) {
+            if (! $current->isWeekend()) {
                 $days++;
             }
             $current->addDay();

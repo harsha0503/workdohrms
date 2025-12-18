@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Training Service
- * 
+ *
  * Handles all business logic for training programs and sessions.
  */
 class TrainingService extends BaseService
@@ -45,7 +45,7 @@ class TrainingService extends BaseService
 
         $query = $this->applyFilters($query, $params);
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query = $this->applySearch($query, $params['search']);
         }
 
@@ -54,8 +54,8 @@ class TrainingService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -67,7 +67,7 @@ class TrainingService extends BaseService
         if ($authorId) {
             $data['author_id'] = $authorId;
         }
-        
+
         return TrainingProgram::create($data);
     }
 
@@ -78,6 +78,7 @@ class TrainingService extends BaseService
     {
         $program = TrainingProgram::findOrFail($id);
         $program->update($data);
+
         return $program->fresh($this->defaultRelations);
     }
 
@@ -113,23 +114,23 @@ class TrainingService extends BaseService
     {
         $query = TrainingSession::with(['trainingProgram', 'trainer', 'participants']);
 
-        if (!empty($params['training_program_id'])) {
+        if (! empty($params['training_program_id'])) {
             $query->where('training_program_id', $params['training_program_id']);
         }
 
-        if (!empty($params['status'])) {
+        if (! empty($params['status'])) {
             $query->where('status', $params['status']);
         }
 
-        if (!empty($params['upcoming'])) {
+        if (! empty($params['upcoming'])) {
             $query->where('start_datetime', '>=', now());
         }
 
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? 15;
 
-        return $paginate 
-            ? $query->latest()->paginate($perPage) 
+        return $paginate
+            ? $query->latest()->paginate($perPage)
             : $query->latest()->get();
     }
 
@@ -141,7 +142,7 @@ class TrainingService extends BaseService
         return DB::transaction(function () use ($data) {
             $session = TrainingSession::create($data);
 
-            if (!empty($data['participant_ids'])) {
+            if (! empty($data['participant_ids'])) {
                 $session->participants()->attach($data['participant_ids']);
             }
 
@@ -199,6 +200,7 @@ class TrainingService extends BaseService
     {
         $session = TrainingSession::findOrFail($sessionId);
         $session->update(['status' => 'completed']);
+
         return $session->fresh();
     }
 
@@ -229,6 +231,7 @@ class TrainingService extends BaseService
     {
         $type = TrainingType::findOrFail($id);
         $type->update($data);
+
         return $type->fresh();
     }
 

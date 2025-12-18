@@ -95,8 +95,8 @@ class OrganizationPolicyController extends Controller
     public function acknowledge(Request $request, OrganizationPolicy $organizationPolicy)
     {
         $staffMember = StaffMember::where('user_id', $request->user()->id)->first();
-        
-        if (!$staffMember) {
+
+        if (! $staffMember) {
             return response()->json([
                 'success' => false,
                 'message' => 'Staff member not found',
@@ -107,7 +107,7 @@ class OrganizationPolicyController extends Controller
             $staffMember->id => [
                 'acknowledged_at' => now(),
                 'ip_address' => $request->ip(),
-            ]
+            ],
         ]);
 
         return response()->json([
@@ -122,8 +122,8 @@ class OrganizationPolicyController extends Controller
     public function pending(Request $request)
     {
         $staffMember = StaffMember::where('user_id', $request->user()->id)->first();
-        
-        if (!$staffMember) {
+
+        if (! $staffMember) {
             return response()->json(['success' => true, 'data' => []]);
         }
 

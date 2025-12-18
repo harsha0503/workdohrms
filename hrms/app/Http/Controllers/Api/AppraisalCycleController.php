@@ -37,7 +37,7 @@ class AppraisalCycleController extends Controller
 
         $validated['status'] = 'draft';
         $validated['author_id'] = $request->user()->id;
-        
+
         $cycle = AppraisalCycle::create($validated);
 
         return response()->json([
@@ -72,7 +72,7 @@ class AppraisalCycleController extends Controller
         $created = 0;
 
         foreach ($staffMembers as $staff) {
-            if (!AppraisalRecord::where('appraisal_cycle_id', $appraisalCycle->id)
+            if (! AppraisalRecord::where('appraisal_cycle_id', $appraisalCycle->id)
                 ->where('staff_member_id', $staff->id)->exists()) {
                 AppraisalRecord::create([
                     'appraisal_cycle_id' => $appraisalCycle->id,

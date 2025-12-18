@@ -50,9 +50,10 @@ class PerformanceObjective extends Model
      */
     public function getCompletionPercentageAttribute(): float
     {
-        if (!$this->target_value || $this->target_value == 0) {
+        if (! $this->target_value || $this->target_value == 0) {
             return $this->status === 'completed' ? 100 : 0;
         }
+
         return min(100, round(($this->current_value / $this->target_value) * 100, 2));
     }
 

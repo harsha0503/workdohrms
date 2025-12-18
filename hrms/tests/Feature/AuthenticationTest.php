@@ -79,7 +79,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create(['is_active' => true]);
         $token = $user->createToken('test-token')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/auth/sign-out');
 
         $response->assertStatus(200)
@@ -91,7 +91,7 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create(['is_active' => true]);
         $token = $user->createToken('test-token')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/auth/profile');
 
         $response->assertStatus(200)

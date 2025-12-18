@@ -18,7 +18,7 @@ class TimeOffRequestFactory extends Factory
     public function definition(): array
     {
         $startDate = fake()->dateTimeBetween('now', '+30 days');
-        $endDate = (clone $startDate)->modify('+' . fake()->numberBetween(1, 5) . ' days');
+        $endDate = (clone $startDate)->modify('+'.fake()->numberBetween(1, 5).' days');
 
         return [
             'request_date' => now(),

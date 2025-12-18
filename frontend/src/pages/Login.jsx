@@ -66,6 +66,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
@@ -86,12 +87,17 @@ export default function Login() {
 
         setLoading(true);
         setError('');
+        setFieldErrors({});
 
         try {
             await authService.login(email, password);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.message || 'Invalid credentials. Try a demo account below.');
+            const response = err.response?.data;
+            setError(response?.message || 'Invalid credentials. Try a demo account below.');
+            if (response?.errors) {
+                setFieldErrors(response.errors);
+            }
         } finally {
             setLoading(false);
         }
@@ -192,28 +198,31 @@ export default function Login() {
                                 </div>
                             )}
 
-                            <div className="form-group">
+                            <div className={`form-group ${fieldErrors.email ? 'has-error' : ''}`}>
                                 <label>Email Address</label>
                                 <div className="input-with-icon">
                                     <Mail size={18} />
                                     <input
                                         type="email"
                                         value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        onChange={(e) => { setEmail(e.target.value); setFieldErrors(prev => ({...prev, email: null})); }}
                                         placeholder="Enter your email"
+                                        className={fieldErrors.email ? 'input-error' : ''}
                                     />
                                 </div>
+                                {fieldErrors.email && <span className="field-error">{fieldErrors.email[0]}</span>}
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${fieldErrors.password ? 'has-error' : ''}`}>
                                 <label>Password</label>
                                 <div className="input-with-icon">
                                     <Lock size={18} />
                                     <input
                                         type={showPassword ? 'text' : 'password'}
                                         value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
+                                        onChange={(e) => { setPassword(e.target.value); setFieldErrors(prev => ({...prev, password: null})); }}
                                         placeholder="Enter your password"
+                                        className={fieldErrors.password ? 'input-error' : ''}
                                     />
                                     <button
                                         type="button"
@@ -223,6 +232,7 @@ export default function Login() {
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
+                                {fieldErrors.password && <span className="field-error">{fieldErrors.password[0]}</span>}
                             </div>
 
                             <div className="form-options">

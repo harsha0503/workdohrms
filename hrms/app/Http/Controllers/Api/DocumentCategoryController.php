@@ -25,13 +25,13 @@ class DocumentCategoryController extends Controller
             $query->where('is_active', true);
         }
 
-        $categories = $request->paginate === 'false' 
-            ? $query->get() 
+        $categories = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $categories
+            'data' => $categories,
         ]);
     }
 
@@ -53,16 +53,17 @@ class DocumentCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Document category created successfully',
-            'data' => $category
+            'data' => $category,
         ], 201);
     }
 
     public function show(DocumentCategory $documentCategory)
     {
         $documentCategory->load(['parent', 'children', 'documents']);
+
         return response()->json([
             'success' => true,
-            'data' => $documentCategory
+            'data' => $documentCategory,
         ]);
     }
 
@@ -84,7 +85,7 @@ class DocumentCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Document category updated successfully',
-            'data' => $documentCategory
+            'data' => $documentCategory,
         ]);
     }
 
@@ -94,7 +95,7 @@ class DocumentCategoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Document category deleted successfully'
+            'message' => 'Document category deleted successfully',
         ]);
     }
 }

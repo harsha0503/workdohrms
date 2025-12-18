@@ -43,6 +43,7 @@ class EmployerContribution extends Model
         if ($this->contribution_type === 'percentage') {
             return ($this->amount / 100) * $baseSalary;
         }
+
         return (float) $this->amount;
     }
 

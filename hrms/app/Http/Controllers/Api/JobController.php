@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Job;
 use App\Models\CustomQuestion;
+use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -28,13 +28,13 @@ class JobController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         }
 
-        $jobs = $request->paginate === 'false' 
-            ? $query->get() 
+        $jobs = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $jobs
+            'data' => $jobs,
         ]);
     }
 
@@ -65,16 +65,17 @@ class JobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job created successfully',
-            'data' => $job->load(['category', 'officeLocation', 'division'])
+            'data' => $job->load(['category', 'officeLocation', 'division']),
         ], 201);
     }
 
     public function show(Job $job)
     {
         $job->load(['category', 'officeLocation', 'division', 'applications.candidate', 'customQuestions']);
+
         return response()->json([
             'success' => true,
-            'data' => $job
+            'data' => $job,
         ]);
     }
 
@@ -94,7 +95,7 @@ class JobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job updated successfully',
-            'data' => $job->load(['category', 'officeLocation', 'division'])
+            'data' => $job->load(['category', 'officeLocation', 'division']),
         ]);
     }
 
@@ -104,7 +105,7 @@ class JobController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Job deleted successfully'
+            'message' => 'Job deleted successfully',
         ]);
     }
 
@@ -115,7 +116,7 @@ class JobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job published successfully',
-            'data' => $job
+            'data' => $job,
         ]);
     }
 
@@ -126,7 +127,7 @@ class JobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job closed successfully',
-            'data' => $job
+            'data' => $job,
         ]);
     }
 
@@ -134,7 +135,7 @@ class JobController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $job->customQuestions()->orderBy('order')->get()
+            'data' => $job->customQuestions()->orderBy('order')->get(),
         ]);
     }
 
@@ -161,7 +162,7 @@ class JobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Question added successfully',
-            'data' => $question
+            'data' => $question,
         ], 201);
     }
 }

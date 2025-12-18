@@ -54,7 +54,7 @@ class SalarySlip extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->slip_reference)) {
                 $model->slip_reference = static::generateReference();
@@ -67,6 +67,7 @@ class SalarySlip extends Model
         $prefix = 'SLP';
         $date = now()->format('Ymd');
         $random = strtoupper(substr(uniqid(), -4));
+
         return "{$prefix}-{$date}-{$random}";
     }
 

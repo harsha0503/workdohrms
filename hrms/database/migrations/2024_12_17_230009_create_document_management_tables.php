@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Document Categories
-        if (!Schema::hasTable('document_categories')) {
+        if (! Schema::hasTable('document_categories')) {
             Schema::create('document_categories', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -21,7 +21,7 @@ return new class extends Migration
         }
 
         // HR Documents
-        if (!Schema::hasTable('hr_documents')) {
+        if (! Schema::hasTable('hr_documents')) {
             Schema::create('hr_documents', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -40,7 +40,7 @@ return new class extends Migration
         }
 
         // Document Acknowledgments
-        if (!Schema::hasTable('document_acknowledgments')) {
+        if (! Schema::hasTable('document_acknowledgments')) {
             Schema::create('document_acknowledgments', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('document_id')->constrained('hr_documents')->onDelete('cascade');

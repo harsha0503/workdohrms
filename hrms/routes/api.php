@@ -1,91 +1,89 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AccessController;
-use App\Http\Controllers\Api\OfficeLocationController;
-use App\Http\Controllers\Api\DivisionController;
-use App\Http\Controllers\Api\JobTitleController;
-use App\Http\Controllers\Api\FileCategoryController;
-use App\Http\Controllers\Api\StaffMemberController;
-use App\Http\Controllers\Api\StaffFileController;
-use App\Http\Controllers\Api\RecognitionCategoryController;
-use App\Http\Controllers\Api\RecognitionRecordController;
-use App\Http\Controllers\Api\RoleUpgradeController;
-use App\Http\Controllers\Api\LocationTransferController;
-use App\Http\Controllers\Api\DisciplineNoteController;
-use App\Http\Controllers\Api\ExitCategoryController;
-use App\Http\Controllers\Api\OffboardingController;
-use App\Http\Controllers\Api\VoluntaryExitController;
-use App\Http\Controllers\Api\BusinessTripController;
-use App\Http\Controllers\Api\GrievanceController;
-use App\Http\Controllers\Api\CompanyNoticeController;
-use App\Http\Controllers\Api\CompanyHolidayController;
-use App\Http\Controllers\Api\TimeOffCategoryController;
-use App\Http\Controllers\Api\TimeOffRequestController;
-use App\Http\Controllers\Api\WorkLogController;
-use App\Http\Controllers\Api\CompensationCategoryController;
-use App\Http\Controllers\Api\BenefitTypeController;
 use App\Http\Controllers\Api\AdvanceTypeController;
-use App\Http\Controllers\Api\WithholdingTypeController;
-use App\Http\Controllers\Api\StaffBenefitController;
-use App\Http\Controllers\Api\IncentiveRecordController;
-use App\Http\Controllers\Api\SalaryAdvanceController;
-use App\Http\Controllers\Api\RecurringDeductionController;
-use App\Http\Controllers\Api\BonusPaymentController;
-use App\Http\Controllers\Api\ExtraHoursRecordController;
-use App\Http\Controllers\Api\EmployerContributionController;
-use App\Http\Controllers\Api\SalarySlipController;
-use App\Http\Controllers\Api\TaxSlabController;
-use App\Http\Controllers\Api\TaxExemptionController;
-use App\Http\Controllers\Api\MinimumTaxLimitController;
-use App\Http\Controllers\Api\CompanyEventController;
-use App\Http\Controllers\Api\DocumentTypeController;
-use App\Http\Controllers\Api\OrganizationPolicyController;
-use App\Http\Controllers\Api\OrganizationDocumentController;
-use App\Http\Controllers\Api\LetterTemplateController;
-use App\Http\Controllers\Api\GeneratedLetterController;
 use App\Http\Controllers\Api\AllowedIpAddressController;
-use App\Http\Controllers\Api\SystemConfigurationController;
-use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\DataTableController;
-use App\Http\Controllers\Api\DataImportController;
-use App\Http\Controllers\Api\DataExportController;
-use App\Http\Controllers\Api\PerformanceObjectiveController;
 use App\Http\Controllers\Api\AppraisalCycleController;
 use App\Http\Controllers\Api\AppraisalRecordController;
-use App\Http\Controllers\Api\AssetTypeController;
 use App\Http\Controllers\Api\AssetController;
-use App\Http\Controllers\Api\TrainingTypeController;
-use App\Http\Controllers\Api\TrainingProgramController;
-use App\Http\Controllers\Api\TrainingSessionController;
-use App\Http\Controllers\Api\JobCategoryController;
-use App\Http\Controllers\Api\JobStageController;
-use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\AssetTypeController;
+use App\Http\Controllers\Api\AttendanceRegularizationController;
+use App\Http\Controllers\Api\BenefitTypeController;
+use App\Http\Controllers\Api\BonusPaymentController;
+use App\Http\Controllers\Api\BusinessTripController;
+use App\Http\Controllers\Api\CandidateAssessmentController;
 use App\Http\Controllers\Api\CandidateController;
-use App\Http\Controllers\Api\JobApplicationController;
-use App\Http\Controllers\Api\InterviewScheduleController;
-use App\Http\Controllers\Api\OnboardingTemplateController;
-use App\Http\Controllers\Api\EmployeeOnboardingController;
-use App\Http\Controllers\Api\ContractTypeController;
+use App\Http\Controllers\Api\CompanyEventController;
+use App\Http\Controllers\Api\CompanyHolidayController;
+use App\Http\Controllers\Api\CompanyNoticeController;
+use App\Http\Controllers\Api\CompensationCategoryController;
 use App\Http\Controllers\Api\ContractController;
-use App\Http\Controllers\Api\MeetingTypeController;
-use App\Http\Controllers\Api\MeetingRoomController;
-use App\Http\Controllers\Api\MeetingController;
-use App\Http\Controllers\Api\ShiftController;
-use App\Http\Controllers\Api\TimesheetProjectController;
-use App\Http\Controllers\Api\TimesheetController;
+use App\Http\Controllers\Api\ContractTypeController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\DataExportController;
+use App\Http\Controllers\Api\DataImportController;
+use App\Http\Controllers\Api\DataTableController;
+use App\Http\Controllers\Api\DisciplineNoteController;
+use App\Http\Controllers\Api\DivisionController;
 use App\Http\Controllers\Api\DocumentCategoryController;
+use App\Http\Controllers\Api\DocumentTypeController;
+use App\Http\Controllers\Api\EmployeeOnboardingController;
+use App\Http\Controllers\Api\EmployerContributionController;
+use App\Http\Controllers\Api\ExitCategoryController;
+use App\Http\Controllers\Api\ExtraHoursRecordController;
+use App\Http\Controllers\Api\FileCategoryController;
+use App\Http\Controllers\Api\GeneratedLetterController;
+use App\Http\Controllers\Api\GrievanceController;
 use App\Http\Controllers\Api\HrDocumentController;
+use App\Http\Controllers\Api\IncentiveRecordController;
+use App\Http\Controllers\Api\InterviewScheduleController;
+use App\Http\Controllers\Api\JobApplicationController;
+use App\Http\Controllers\Api\JobCategoryController;
+use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\JobRequisitionController;
+use App\Http\Controllers\Api\JobStageController;
+use App\Http\Controllers\Api\JobTitleController;
+use App\Http\Controllers\Api\LetterTemplateController;
+use App\Http\Controllers\Api\LocationTransferController;
 use App\Http\Controllers\Api\MediaDirectoryController;
 use App\Http\Controllers\Api\MediaFileController;
-use App\Http\Controllers\Api\JobRequisitionController;
-use App\Http\Controllers\Api\OfferTemplateController;
+use App\Http\Controllers\Api\MeetingController;
+use App\Http\Controllers\Api\MeetingRoomController;
+use App\Http\Controllers\Api\MeetingTypeController;
+use App\Http\Controllers\Api\MinimumTaxLimitController;
+use App\Http\Controllers\Api\OffboardingController;
 use App\Http\Controllers\Api\OfferController;
-use App\Http\Controllers\Api\CandidateAssessmentController;
-use App\Http\Controllers\Api\AttendanceRegularizationController;
-use App\Http\Controllers\Api\DashboardController;
-
+use App\Http\Controllers\Api\OfferTemplateController;
+use App\Http\Controllers\Api\OfficeLocationController;
+use App\Http\Controllers\Api\OnboardingTemplateController;
+use App\Http\Controllers\Api\OrganizationDocumentController;
+use App\Http\Controllers\Api\OrganizationPolicyController;
+use App\Http\Controllers\Api\PerformanceObjectiveController;
+use App\Http\Controllers\Api\RecognitionCategoryController;
+use App\Http\Controllers\Api\RecognitionRecordController;
+use App\Http\Controllers\Api\RecurringDeductionController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\RoleUpgradeController;
+use App\Http\Controllers\Api\SalaryAdvanceController;
+use App\Http\Controllers\Api\SalarySlipController;
+use App\Http\Controllers\Api\ShiftController;
+use App\Http\Controllers\Api\StaffBenefitController;
+use App\Http\Controllers\Api\StaffFileController;
+use App\Http\Controllers\Api\StaffMemberController;
+use App\Http\Controllers\Api\SystemConfigurationController;
+use App\Http\Controllers\Api\TaxExemptionController;
+use App\Http\Controllers\Api\TaxSlabController;
+use App\Http\Controllers\Api\TimeOffCategoryController;
+use App\Http\Controllers\Api\TimeOffRequestController;
+use App\Http\Controllers\Api\TimesheetController;
+use App\Http\Controllers\Api\TimesheetProjectController;
+use App\Http\Controllers\Api\TrainingProgramController;
+use App\Http\Controllers\Api\TrainingSessionController;
+use App\Http\Controllers\Api\TrainingTypeController;
+use App\Http\Controllers\Api\VoluntaryExitController;
+use App\Http\Controllers\Api\WithholdingTypeController;
+use App\Http\Controllers\Api\WorkLogController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,7 +101,7 @@ Route::prefix('auth')->group(function () {
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // Authentication
     Route::prefix('auth')->group(function () {
         Route::post('/sign-out', [AccessController::class, 'signOut']);
@@ -136,7 +134,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // ============================================
     Route::apiResource('staff-members', StaffMemberController::class);
     Route::get('/staff-members-dropdown', [StaffMemberController::class, 'dropdown']);
-    
+
     // Staff Files (nested resource)
     Route::get('/staff-members/{staffMember}/files', [StaffFileController::class, 'index']);
     Route::post('/staff-members/{staffMember}/files', [StaffFileController::class, 'store']);
@@ -165,13 +163,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // ============================================
     Route::apiResource('business-trips', BusinessTripController::class);
     Route::post('/business-trips/{businessTrip}/process', [BusinessTripController::class, 'processApproval']);
-    
+
     Route::apiResource('grievances', GrievanceController::class);
     Route::post('/grievances/{grievance}/status', [GrievanceController::class, 'updateStatus']);
-    
+
     Route::apiResource('company-notices', CompanyNoticeController::class);
     Route::post('/company-notices/{companyNotice}/read', [CompanyNoticeController::class, 'markAsRead']);
-    
+
     Route::apiResource('company-holidays', CompanyHolidayController::class);
     Route::post('/company-holidays/bulk-import', [CompanyHolidayController::class, 'bulkImport']);
 
@@ -302,7 +300,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/holidays', [DataImportController::class, 'importHolidays']);
         Route::get('/{dataImport}', [DataImportController::class, 'show']);
     });
-    
+
     Route::prefix('exports')->group(function () {
         Route::get('/staff-members', [DataExportController::class, 'exportStaffMembers']);
         Route::get('/attendance', [DataExportController::class, 'exportAttendance']);
@@ -502,4 +500,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/attendance-regularizations-pending', [AttendanceRegularizationController::class, 'pending']);
     Route::get('/my-regularization-requests', [AttendanceRegularizationController::class, 'myRequests']);
 });
-

@@ -3,18 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Services\AuthService;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
 class AccessController extends Controller
 {
-    /**
-     * Register a new user account.
-     */
-    public function signUp(Request $request)
+    use ApiResponse;
+
+    protected AuthService $service;
+
+    public function __construct(AuthService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function signUp(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -22,164 +27,58 @@ class AccessController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'is_active' => true,
-        ]);
+        $result = $this->service->register($validated);
 
-        // Assign default role
-        $user->assignRole('staff_member');
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Account created successfully',
-            'data' => [
-                'user' => $user,
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ],
-        ], 201);
+        return $this->created($result, 'Account created successfully');
     }
 
-    /**
-     * Authenticate user and issue token.
-     */
-    public function signIn(Request $request)
+    public function signIn(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
+        $result = $this->service->login($validated);
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        if (!$user->is_active) {
-            throw ValidationException::withMessages([
-                'email' => ['Your account has been deactivated.'],
-            ]);
-        }
-
-        // Revoke existing tokens (optional - for single session)
-        // $user->tokens()->delete();
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        // Get user's role and permissions
-        $user->load('roles.permissions');
-        $role = $user->roles->first();
-        $permissions = $user->getAllPermissions()->pluck('name')->toArray();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Signed in successfully',
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $role ? $role->name : 'staff_member',
-                    'role_display' => $role ? ucwords(str_replace('_', ' ', $role->name)) : 'Staff Member',
-                    'permissions' => $permissions,
-                ],
-                'token' => $token,
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ],
-        ]);
+        return $this->success($result, 'Signed in successfully');
     }
 
-    /**
-     * Revoke current access token.
-     */
-    public function signOut(Request $request)
+    public function signOut(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $this->service->logout($request->user());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Signed out successfully',
-        ]);
+        return $this->success(null, 'Signed out successfully');
     }
 
-    /**
-     * Get authenticated user profile.
-     */
-    public function profile(Request $request)
+    public function profile(Request $request): JsonResponse
     {
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'user' => $request->user()->load('roles', 'permissions'),
-            ],
-        ]);
+        $result = $this->service->getProfile($request->user());
+
+        return $this->success($result, 'Profile retrieved successfully');
     }
 
-    /**
-     * Send password reset link.
-     */
-    public function forgotPassword(Request $request)
+    public function forgotPassword(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $this->service->sendPasswordResetLink($validated['email']);
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Password reset link sent to your email',
-            ]);
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [__($status)],
-        ]);
+        return $this->success(null, 'Password reset link sent to your email');
     }
 
-    /**
-     * Reset password with token.
-     */
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                ])->save();
+        $this->service->resetPassword($validated);
 
-                $user->tokens()->delete();
-            }
-        );
-
-        if ($status === Password::PASSWORD_RESET) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Password has been reset successfully',
-            ]);
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [__($status)],
-        ]);
+        return $this->success(null, 'Password has been reset successfully');
     }
 }

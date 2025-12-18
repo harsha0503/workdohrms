@@ -4,15 +4,13 @@ namespace App\Services;
 
 use App\Models\StaffMember;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 /**
  * Staff Member Service
- * 
+ *
  * Handles all business logic related to staff members/employees.
  */
 class StaffMemberService extends BaseService
@@ -20,17 +18,17 @@ class StaffMemberService extends BaseService
     protected string $modelClass = StaffMember::class;
 
     protected array $defaultRelations = [
-        'user', 
-        'officeLocation', 
-        'division', 
-        'jobTitle'
+        'user',
+        'officeLocation',
+        'division',
+        'jobTitle',
     ];
 
     protected array $searchableFields = [
         'full_name',
         'staff_code',
         'personal_email',
-        'mobile_number'
+        'mobile_number',
     ];
 
     protected array $filterableFields = [
@@ -56,7 +54,7 @@ class StaffMemberService extends BaseService
 
         $query = $this->applyFilters($query, $params);
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query = $this->applySearch($query, $params['search']);
         }
 
@@ -65,8 +63,8 @@ class StaffMemberService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -88,7 +86,7 @@ class StaffMemberService extends BaseService
             // Prepare staff member data
             $staffData = collect($data)->except(['email', 'password'])->toArray();
             $staffData['user_id'] = $user->id;
-            
+
             if ($authorId) {
                 $staffData['author_id'] = $authorId;
             }
@@ -132,6 +130,7 @@ class StaffMemberService extends BaseService
                 $staffMember->user->update(['is_active' => false]);
             }
             $staffMember->update(['employment_status' => 'terminated']);
+
             return $staffMember->delete();
         });
     }
@@ -162,10 +161,10 @@ class StaffMemberService extends BaseService
     {
         $query = StaffMember::active()->select(['id', 'full_name', 'staff_code']);
 
-        if (!empty($params['office_location_id'])) {
+        if (! empty($params['office_location_id'])) {
             $query->forLocation($params['office_location_id']);
         }
-        if (!empty($params['division_id'])) {
+        if (! empty($params['division_id'])) {
             $query->forDivision($params['division_id']);
         }
 
@@ -226,6 +225,7 @@ class StaffMemberService extends BaseService
         }
 
         $staffMember->update(['employment_status' => $status]);
+
         return $staffMember->fresh();
     }
 

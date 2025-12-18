@@ -70,7 +70,7 @@ class AllowedIpAddressController extends Controller
     public function update(Request $request, AllowedIpAddress $allowedIpAddress)
     {
         $validated = $request->validate([
-            'ip_address' => 'sometimes|required|ip|unique:allowed_ip_addresses,ip_address,' . $allowedIpAddress->id,
+            'ip_address' => 'sometimes|required|ip|unique:allowed_ip_addresses,ip_address,'.$allowedIpAddress->id,
             'label' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'is_active' => 'boolean',

@@ -51,7 +51,7 @@ class AdvanceTypeController extends Controller
     public function update(Request $request, AdvanceType $advanceType)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:advance_types,title,' . $advanceType->id,
+            'title' => 'sometimes|required|string|max:255|unique:advance_types,title,'.$advanceType->id,
             'notes' => 'nullable|string',
             'is_active' => 'boolean',
         ]);

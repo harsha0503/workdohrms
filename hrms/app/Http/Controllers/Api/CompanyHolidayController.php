@@ -103,7 +103,7 @@ class CompanyHolidayController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => count($created) . ' holidays imported',
+            'message' => count($created).' holidays imported',
             'data' => $created,
         ], 201);
     }
