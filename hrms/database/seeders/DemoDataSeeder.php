@@ -10,9 +10,11 @@ use App\Models\JobTitle;
 use App\Models\OfficeLocation;
 use App\Models\StaffMember;
 use App\Models\TimeOffCategory;
+use App\Models\User;
 use App\Models\WorkLog;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DemoDataSeeder extends Seeder
 {
@@ -23,9 +25,9 @@ class DemoDataSeeder extends Seeder
     {
         // Office Locations
         $locations = [
-            ['title' => 'Head Office', 'city' => 'New York', 'is_headquarters' => true],
-            ['title' => 'Regional Office West', 'city' => 'Los Angeles', 'is_headquarters' => false],
-            ['title' => 'Regional Office East', 'city' => 'Boston', 'is_headquarters' => false],
+            ['title' => 'Head Office', 'address' => 'New York, NY', 'is_active' => true],
+            ['title' => 'Regional Office West', 'address' => 'Los Angeles, CA', 'is_active' => true],
+            ['title' => 'Regional Office East', 'address' => 'Boston, MA', 'is_active' => true],
         ];
 
         foreach ($locations as $loc) {
@@ -52,11 +54,11 @@ class DemoDataSeeder extends Seeder
 
         // Job Titles
         $jobTitles = [
-            ['title' => 'Senior Developer', 'division_id' => $engineering->id, 'min_salary' => 80000, 'max_salary' => 120000],
-            ['title' => 'Junior Developer', 'division_id' => $engineering->id, 'min_salary' => 50000, 'max_salary' => 70000],
-            ['title' => 'Team Lead', 'division_id' => $engineering->id, 'min_salary' => 100000, 'max_salary' => 150000],
-            ['title' => 'HR Manager', 'division_id' => $hr->id, 'min_salary' => 70000, 'max_salary' => 100000],
-            ['title' => 'HR Coordinator', 'division_id' => $hr->id, 'min_salary' => 45000, 'max_salary' => 60000],
+            ['title' => 'Senior Developer', 'division_id' => $engineering->id],
+            ['title' => 'Junior Developer', 'division_id' => $engineering->id],
+            ['title' => 'Team Lead', 'division_id' => $engineering->id],
+            ['title' => 'HR Manager', 'division_id' => $hr->id],
+            ['title' => 'HR Coordinator', 'division_id' => $hr->id],
         ];
 
         foreach ($jobTitles as $jt) {
@@ -65,10 +67,10 @@ class DemoDataSeeder extends Seeder
 
         // Time Off Categories
         $leaveTypes = [
-            ['title' => 'Annual Leave', 'annual_allowance' => 20, 'is_paid' => true],
-            ['title' => 'Sick Leave', 'annual_allowance' => 10, 'is_paid' => true],
-            ['title' => 'Personal Leave', 'annual_allowance' => 5, 'is_paid' => true],
-            ['title' => 'Unpaid Leave', 'annual_allowance' => 30, 'is_paid' => false],
+            ['title' => 'Annual Leave', 'annual_quota' => 20, 'is_paid' => true],
+            ['title' => 'Sick Leave', 'annual_quota' => 10, 'is_paid' => true],
+            ['title' => 'Personal Leave', 'annual_quota' => 5, 'is_paid' => true],
+            ['title' => 'Unpaid Leave', 'annual_quota' => 30, 'is_paid' => false],
         ];
 
         foreach ($leaveTypes as $lt) {
@@ -91,24 +93,101 @@ class DemoDataSeeder extends Seeder
             CompanyHoliday::create($h);
         }
 
-        // Staff Members (using factory if available, otherwise manual)
-        $staffData = [
-            ['first_name' => 'John', 'last_name' => 'Smith', 'personal_email' => 'john.smith@demo.com', 'gender' => 'male', 'hire_date' => '2022-03-15', 'base_salary' => 95000],
-            ['first_name' => 'Sarah', 'last_name' => 'Johnson', 'personal_email' => 'sarah.j@demo.com', 'gender' => 'female', 'hire_date' => '2023-01-10', 'base_salary' => 65000],
-            ['first_name' => 'Michael', 'last_name' => 'Williams', 'personal_email' => 'm.williams@demo.com', 'gender' => 'male', 'hire_date' => '2021-07-20', 'base_salary' => 110000],
-            ['first_name' => 'Emily', 'last_name' => 'Brown', 'personal_email' => 'emily.b@demo.com', 'gender' => 'female', 'hire_date' => '2024-02-01', 'base_salary' => 55000],
-            ['first_name' => 'David', 'last_name' => 'Davis', 'personal_email' => 'd.davis@demo.com', 'gender' => 'male', 'hire_date' => '2020-11-05', 'base_salary' => 85000],
+        // Create demo users with different roles
+        $demoUsers = [
+            [
+                'name' => 'Admin User',
+                'email' => 'admin@hrms.local',
+                'role' => 'administrator',
+                'staff_code' => 'EMP001',
+                'base_salary' => 120000,
+            ],
+            [
+                'name' => 'HR Officer',
+                'email' => 'hr@hrms.local',
+                'role' => 'hr_officer',
+                'staff_code' => 'EMP002',
+                'base_salary' => 85000,
+            ],
+            [
+                'name' => 'Manager User',
+                'email' => 'manager@hrms.local',
+                'role' => 'manager',
+                'staff_code' => 'EMP003',
+                'base_salary' => 95000,
+            ],
+            [
+                'name' => 'Employee User',
+                'email' => 'employee@hrms.local',
+                'role' => 'staff_member',
+                'staff_code' => 'EMP004',
+                'base_salary' => 55000,
+            ],
         ];
 
         $jobTitleModels = JobTitle::all();
-        foreach ($staffData as $index => $sd) {
-            StaffMember::create(array_merge($sd, [
-                'office_location_id' => $headOffice->id,
-                'division_id' => $engineering->id,
-                'job_title_id' => $jobTitleModels[$index % count($jobTitleModels)]->id,
-                'employment_status' => 'active',
-                'employment_type' => 'full_time',
-            ]));
+
+        foreach ($demoUsers as $index => $userData) {
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'name' => $userData['name'],
+                    'password' => Hash::make('password'),
+                ]
+            );
+
+            if (!$user->hasRole($userData['role'])) {
+                $user->assignRole($userData['role']);
+            }
+
+            StaffMember::firstOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'full_name' => $userData['name'],
+                    'personal_email' => $userData['email'],
+                    'staff_code' => $userData['staff_code'],
+                    'office_location_id' => $headOffice->id,
+                    'division_id' => $engineering->id,
+                    'job_title_id' => $jobTitleModels[$index % count($jobTitleModels)]->id,
+                    'employment_status' => 'active',
+                    'base_salary' => $userData['base_salary'],
+                    'hire_date' => Carbon::now()->subMonths(rand(6, 36)),
+                ]
+            );
+        }
+
+        // Additional staff members for testing
+        $additionalStaff = [
+            ['full_name' => 'John Smith', 'personal_email' => 'john.smith@demo.com', 'gender' => 'male', 'base_salary' => 95000],
+            ['full_name' => 'Sarah Johnson', 'personal_email' => 'sarah.j@demo.com', 'gender' => 'female', 'base_salary' => 65000],
+            ['full_name' => 'Michael Williams', 'personal_email' => 'm.williams@demo.com', 'gender' => 'male', 'base_salary' => 110000],
+            ['full_name' => 'Emily Brown', 'personal_email' => 'emily.b@demo.com', 'gender' => 'female', 'base_salary' => 55000],
+            ['full_name' => 'David Davis', 'personal_email' => 'd.davis@demo.com', 'gender' => 'male', 'base_salary' => 85000],
+        ];
+
+        foreach ($additionalStaff as $index => $sd) {
+            $user = User::firstOrCreate(
+                ['email' => $sd['personal_email']],
+                [
+                    'name' => $sd['full_name'],
+                    'password' => Hash::make('password'),
+                ]
+            );
+            if (!$user->hasRole('staff_member')) {
+                $user->assignRole('staff_member');
+            }
+
+            StaffMember::firstOrCreate(
+                ['user_id' => $user->id],
+                array_merge($sd, [
+                    'staff_code' => 'EMP' . str_pad($index + 5, 3, '0', STR_PAD_LEFT),
+                    'office_location_id' => $headOffice->id,
+                    'division_id' => $engineering->id,
+                    'job_title_id' => $jobTitleModels[$index % count($jobTitleModels)]->id,
+                    'employment_status' => 'active',
+                    'hire_date' => Carbon::now()->subMonths(rand(6, 36)),
+                ])
+            );
         }
 
         // Generate attendance for last 30 days
@@ -135,7 +214,6 @@ class DemoDataSeeder extends Seeder
                     'clock_in' => $status === 'present' ? '09:'.str_pad(rand(0, 15), 2, '0', STR_PAD_LEFT) : null,
                     'clock_out' => $status === 'present' ? '18:'.str_pad(rand(0, 30), 2, '0', STR_PAD_LEFT) : null,
                     'late_minutes' => $status === 'present' ? rand(0, 20) : 0,
-                    'working_minutes' => $status === 'present' ? 480 : ($status === 'half_day' ? 240 : 0),
                 ]);
             }
         }
@@ -144,9 +222,7 @@ class DemoDataSeeder extends Seeder
         CompanyNotice::create([
             'title' => 'Welcome to the New HRMS',
             'content' => 'We are excited to announce the launch of our new Human Resource Management System. This platform will streamline all HR processes including attendance tracking, leave management, and payroll processing.',
-            'notice_type' => 'general',
-            'priority' => 'high',
-            'is_active' => true,
+            'is_company_wide' => true,
             'publish_date' => now(),
         ]);
 

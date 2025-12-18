@@ -15,6 +15,14 @@ import {
 } from '../../components/ui/select';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { ArrowLeft, Loader2, AlertCircle, Calendar } from 'lucide-react';
+import { toast } from '../../hooks/use-toast';
+
+interface FieldErrors {
+  time_off_category_id?: string;
+  start_date?: string;
+  end_date?: string;
+  reason?: string;
+}
 
 interface LeaveCategory {
   id: number;
@@ -28,6 +36,7 @@ export default function LeaveApply() {
   const [categories, setCategories] = useState<LeaveCategory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formData, setFormData] = useState({
     time_off_category_id: '',
     start_date: '',
@@ -55,9 +64,46 @@ export default function LeaveApply() {
     return diff > 0 ? diff : 0;
   };
 
+  const validateForm = (): boolean => {
+    const errors: FieldErrors = {};
+    
+    if (!formData.time_off_category_id) {
+      errors.time_off_category_id = 'Leave type is required';
+    }
+    
+    if (!formData.start_date) {
+      errors.start_date = 'Start date is required';
+    }
+    
+    if (!formData.end_date) {
+      errors.end_date = 'End date is required';
+    } else if (formData.start_date && new Date(formData.end_date) < new Date(formData.start_date)) {
+      errors.end_date = 'End date must be after start date';
+    }
+    
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please fix the errors in the form',
+      });
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -65,10 +111,31 @@ export default function LeaveApply() {
         ...formData,
         total_days: calculateDays(),
       });
+      toast({
+        title: 'Success',
+        description: 'Leave request submitted successfully',
+      });
       navigate('/leave/requests');
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || 'Failed to submit leave request');
+      const error = err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
+      const errorMessage = error.response?.data?.message || 'Failed to submit leave request';
+      
+      if (error.response?.data?.errors) {
+        const apiErrors: FieldErrors = {};
+        const errors = error.response.data.errors;
+        if (errors.time_off_category_id) apiErrors.time_off_category_id = errors.time_off_category_id[0];
+        if (errors.start_date) apiErrors.start_date = errors.start_date[0];
+        if (errors.end_date) apiErrors.end_date = errors.end_date[0];
+        if (errors.reason) apiErrors.reason = errors.reason[0];
+        setFieldErrors(apiErrors);
+      }
+      
+      setError(errorMessage);
+      toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -103,14 +170,15 @@ export default function LeaveApply() {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="time_off_category_id">Leave Type *</Label>
+                  <Label htmlFor="time_off_category_id" className={fieldErrors.time_off_category_id ? 'text-red-500' : ''}>Leave Type *</Label>
                   <Select
                     value={formData.time_off_category_id}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, time_off_category_id: value })
-                    }
+                    onValueChange={(value) => {
+                      setFormData({ ...formData, time_off_category_id: value });
+                      if (fieldErrors.time_off_category_id) setFieldErrors(prev => ({ ...prev, time_off_category_id: undefined }));
+                    }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={fieldErrors.time_off_category_id ? 'border-red-500' : ''}>
                       <SelectValue placeholder="Select leave type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -121,29 +189,44 @@ export default function LeaveApply() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {fieldErrors.time_off_category_id && (
+                    <p className="text-sm text-red-500">{fieldErrors.time_off_category_id}</p>
+                  )}
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="start_date">Start Date *</Label>
+                    <Label htmlFor="start_date" className={fieldErrors.start_date ? 'text-red-500' : ''}>Start Date *</Label>
                     <Input
                       id="start_date"
                       type="date"
                       value={formData.start_date}
-                      onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                      required
+                      onChange={(e) => {
+                        setFormData({ ...formData, start_date: e.target.value });
+                        if (fieldErrors.start_date) setFieldErrors(prev => ({ ...prev, start_date: undefined }));
+                      }}
+                      aria-invalid={!!fieldErrors.start_date}
                     />
+                    {fieldErrors.start_date && (
+                      <p className="text-sm text-red-500">{fieldErrors.start_date}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="end_date">End Date *</Label>
+                    <Label htmlFor="end_date" className={fieldErrors.end_date ? 'text-red-500' : ''}>End Date *</Label>
                     <Input
                       id="end_date"
                       type="date"
                       value={formData.end_date}
-                      onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, end_date: e.target.value });
+                        if (fieldErrors.end_date) setFieldErrors(prev => ({ ...prev, end_date: undefined }));
+                      }}
                       min={formData.start_date}
-                      required
+                      aria-invalid={!!fieldErrors.end_date}
                     />
+                    {fieldErrors.end_date && (
+                      <p className="text-sm text-red-500">{fieldErrors.end_date}</p>
+                    )}
                   </div>
                 </div>
 

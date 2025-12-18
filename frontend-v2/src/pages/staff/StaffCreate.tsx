@@ -15,16 +15,25 @@ import {
 } from '../../components/ui/select';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+import { toast } from '../../hooks/use-toast';
 
 interface SelectOption {
   id: number;
   name: string;
 }
 
+interface FieldErrors {
+  full_name?: string;
+  personal_email?: string;
+  hire_date?: string;
+  [key: string]: string | undefined;
+}
+
 export default function StaffCreate() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [locations, setLocations] = useState<SelectOption[]>([]);
   const [divisions, setDivisions] = useState<SelectOption[]>([]);
   const [jobTitles, setJobTitles] = useState<SelectOption[]>([]);
@@ -73,24 +82,88 @@ export default function StaffCreate() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: undefined }));
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData({ ...formData, [name]: value });
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const errors: FieldErrors = {};
+    
+    if (!formData.full_name.trim()) {
+      errors.full_name = 'Full name is required';
+    }
+    
+    if (!formData.personal_email.trim()) {
+      errors.personal_email = 'Personal email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.personal_email)) {
+      errors.personal_email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.hire_date) {
+      errors.hire_date = 'Hire date is required';
+    }
+    
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please fix the errors in the form',
+      });
+      return false;
+    }
+    
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
       await staffService.create(formData);
+      toast({
+        title: 'Success',
+        description: 'Staff member created successfully',
+      });
       navigate('/staff');
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || 'Failed to create staff member');
+      const error = err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
+      const errorMessage = error.response?.data?.message || 'Failed to create staff member';
+      
+      if (error.response?.data?.errors) {
+        const apiErrors: FieldErrors = {};
+        const errors = error.response.data.errors;
+        Object.keys(errors).forEach(key => {
+          apiErrors[key] = errors[key][0];
+        });
+        setFieldErrors(apiErrors);
+      }
+      
+      setError(errorMessage);
+      toast({
+        variant: 'destructive',
+        title: 'Creation Failed',
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -124,25 +197,31 @@ export default function StaffCreate() {
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="full_name">Full Name *</Label>
+                <Label htmlFor="full_name" className={fieldErrors.full_name ? 'text-red-500' : ''}>Full Name *</Label>
                 <Input
                   id="full_name"
                   name="full_name"
                   value={formData.full_name}
                   onChange={handleChange}
-                  required
+                  aria-invalid={!!fieldErrors.full_name}
                 />
+                {fieldErrors.full_name && (
+                  <p className="text-sm text-red-500">{fieldErrors.full_name}</p>
+                )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="personal_email">Personal Email *</Label>
+                <Label htmlFor="personal_email" className={fieldErrors.personal_email ? 'text-red-500' : ''}>Personal Email *</Label>
                 <Input
                   id="personal_email"
                   name="personal_email"
                   type="email"
                   value={formData.personal_email}
                   onChange={handleChange}
-                  required
+                  aria-invalid={!!fieldErrors.personal_email}
                 />
+                {fieldErrors.personal_email && (
+                  <p className="text-sm text-red-500">{fieldErrors.personal_email}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="work_email">Work Email</Label>
@@ -308,15 +387,18 @@ export default function StaffCreate() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="hire_date">Hire Date *</Label>
+                <Label htmlFor="hire_date" className={fieldErrors.hire_date ? 'text-red-500' : ''}>Hire Date *</Label>
                 <Input
                   id="hire_date"
                   name="hire_date"
                   type="date"
                   value={formData.hire_date}
                   onChange={handleChange}
-                  required
+                  aria-invalid={!!fieldErrors.hire_date}
                 />
+                {fieldErrors.hire_date && (
+                  <p className="text-sm text-red-500">{fieldErrors.hire_date}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="employment_status">Employment Status</Label>

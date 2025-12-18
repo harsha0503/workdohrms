@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
 import AuthLayout from './layouts/AuthLayout';
+import { Toaster } from './components/ui/toaster';
 
 // Auth Pages
 import Login from './pages/auth/Login';
@@ -79,6 +80,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <Toaster />
         <Routes>
           {/* Public Routes - Auth */}
           <Route element={<AuthLayout />}>
