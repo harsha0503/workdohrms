@@ -27,7 +27,7 @@ class OfferTemplateController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $templates
+            'data' => $templates,
         ]);
     }
 
@@ -60,16 +60,17 @@ class OfferTemplateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer template created successfully',
-            'data' => $template
+            'data' => $template,
         ], 201);
     }
 
     public function show(OfferTemplate $offerTemplate)
     {
         $offerTemplate->available_variables = OfferTemplate::getAvailableVariables();
+
         return response()->json([
             'success' => true,
-            'data' => $offerTemplate
+            'data' => $offerTemplate,
         ]);
     }
 
@@ -98,7 +99,7 @@ class OfferTemplateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Offer template updated successfully',
-            'data' => $offerTemplate
+            'data' => $offerTemplate,
         ]);
     }
 
@@ -107,7 +108,7 @@ class OfferTemplateController extends Controller
         if ($offerTemplate->offers()->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete template with existing offers'
+                'message' => 'Cannot delete template with existing offers',
             ], 400);
         }
 
@@ -115,7 +116,7 @@ class OfferTemplateController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Offer template deleted successfully'
+            'message' => 'Offer template deleted successfully',
         ]);
     }
 
@@ -123,7 +124,7 @@ class OfferTemplateController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => OfferTemplate::getAvailableVariables()
+            'data' => OfferTemplate::getAvailableVariables(),
         ]);
     }
 }

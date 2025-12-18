@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\TrainingSession;
 use App\Models\TrainingParticipant;
+use App\Models\TrainingSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -28,13 +28,13 @@ class TrainingSessionController extends Controller
             $query->where('date', '<=', $request->date_to);
         }
 
-        $sessions = $request->paginate === 'false' 
-            ? $query->get() 
+        $sessions = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $sessions
+            'data' => $sessions,
         ]);
     }
 
@@ -59,16 +59,17 @@ class TrainingSessionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training session created successfully',
-            'data' => $session->load('program')
+            'data' => $session->load('program'),
         ], 201);
     }
 
     public function show(TrainingSession $trainingSession)
     {
         $trainingSession->load(['program.trainingType', 'trainer', 'participants.staffMember']);
+
         return response()->json([
             'success' => true,
-            'data' => $trainingSession
+            'data' => $trainingSession,
         ]);
     }
 
@@ -89,7 +90,7 @@ class TrainingSessionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training session updated successfully',
-            'data' => $trainingSession->load('program')
+            'data' => $trainingSession->load('program'),
         ]);
     }
 
@@ -99,7 +100,7 @@ class TrainingSessionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Training session deleted successfully'
+            'message' => 'Training session deleted successfully',
         ]);
     }
 
@@ -121,7 +122,7 @@ class TrainingSessionController extends Controller
         if ($existing) {
             return response()->json([
                 'success' => false,
-                'message' => 'Employee is already enrolled in this session'
+                'message' => 'Employee is already enrolled in this session',
             ], 400);
         }
 
@@ -130,7 +131,7 @@ class TrainingSessionController extends Controller
         if ($currentCount >= $trainingSession->max_participants) {
             return response()->json([
                 'success' => false,
-                'message' => 'Session is at full capacity'
+                'message' => 'Session is at full capacity',
             ], 400);
         }
 
@@ -143,7 +144,7 @@ class TrainingSessionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Employee enrolled successfully',
-            'data' => $participant->load('staffMember')
+            'data' => $participant->load('staffMember'),
         ]);
     }
 
@@ -154,7 +155,7 @@ class TrainingSessionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training session marked as completed',
-            'data' => $trainingSession
+            'data' => $trainingSession,
         ]);
     }
 
@@ -166,7 +167,7 @@ class TrainingSessionController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $trainings
+            'data' => $trainings,
         ]);
     }
 }

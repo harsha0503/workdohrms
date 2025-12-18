@@ -34,7 +34,7 @@ class StaffFileController extends Controller
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('staff-files/' . $staffMember->id, 'public');
+        $path = $file->store('staff-files/'.$staffMember->id, 'public');
 
         $staffFile = StaffFile::create([
             'staff_member_id' => $staffMember->id,

@@ -16,6 +16,7 @@ class MeetingRoomController extends Controller
             $query->where('status', $request->status);
         }
         $rooms = $query->get();
+
         return response()->json(['success' => true, 'data' => $rooms]);
     }
 
@@ -33,6 +34,7 @@ class MeetingRoomController extends Controller
         }
 
         $room = MeetingRoom::create($request->all());
+
         return response()->json(['success' => true, 'message' => 'Created', 'data' => $room], 201);
     }
 
@@ -44,18 +46,21 @@ class MeetingRoomController extends Controller
     public function update(Request $request, MeetingRoom $meetingRoom)
     {
         $meetingRoom->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $meetingRoom]);
     }
 
     public function destroy(MeetingRoom $meetingRoom)
     {
         $meetingRoom->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 
     public function available(Request $request)
     {
         $rooms = MeetingRoom::available()->get();
+
         return response()->json(['success' => true, 'data' => $rooms]);
     }
 }

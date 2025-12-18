@@ -16,7 +16,7 @@ class RecognitionCategoryController extends Controller
             $query->where('is_active', $request->boolean('active'));
         }
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         $categories = $request->boolean('paginate', true)

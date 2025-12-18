@@ -91,7 +91,7 @@ class SystemConfigurationController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => count($validated['configs']) . ' configurations updated',
+            'message' => count($validated['configs']).' configurations updated',
         ]);
     }
 

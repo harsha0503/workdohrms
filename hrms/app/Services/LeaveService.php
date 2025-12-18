@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\TimeOffRequest;
 use App\Models\TimeOffCategory;
+use App\Models\TimeOffRequest;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 /**
  * Leave Service
- * 
+ *
  * Handles all business logic for leave/time-off management.
  */
 class LeaveService extends BaseService
@@ -42,22 +42,22 @@ class LeaveService extends BaseService
 
         $query = $this->applyFilters($query, $params);
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query = $this->applySearch($query, $params['search']);
         }
 
         // Date range filter
-        if (!empty($params['start_date'])) {
+        if (! empty($params['start_date'])) {
             $query->where('start_date', '>=', $params['start_date']);
         }
-        if (!empty($params['end_date'])) {
+        if (! empty($params['end_date'])) {
             $query->where('end_date', '<=', $params['end_date']);
         }
 
         // Month/Year filter
-        if (!empty($params['month']) && !empty($params['year'])) {
+        if (! empty($params['month']) && ! empty($params['year'])) {
             $query->whereMonth('start_date', $params['month'])
-                  ->whereYear('start_date', $params['year']);
+                ->whereYear('start_date', $params['year']);
         }
 
         $query = $this->applyOrdering($query, $params);
@@ -65,8 +65,8 @@ class LeaveService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -80,9 +80,9 @@ class LeaveService extends BaseService
             $startDate = Carbon::parse($data['start_date']);
             $endDate = Carbon::parse($data['end_date']);
             $data['total_days'] = $startDate->diffInDays($endDate) + 1;
-            
+
             $data['status'] = 'pending';
-            
+
             return TimeOffRequest::create($data);
         });
     }
@@ -155,6 +155,7 @@ class LeaveService extends BaseService
     public function getPendingRequests(array $params = [])
     {
         $params['status'] = 'pending';
+
         return $this->getAllRequests($params);
     }
 
@@ -164,6 +165,7 @@ class LeaveService extends BaseService
     public function getEmployeeRequests(int $staffMemberId, array $params = [])
     {
         $params['staff_member_id'] = $staffMemberId;
+
         return $this->getAllRequests($params);
     }
 
@@ -219,7 +221,7 @@ class LeaveService extends BaseService
     /**
      * Get employees on leave for a specific date.
      */
-    public function getOnLeave(string $date = null): Collection
+    public function getOnLeave(?string $date = null): Collection
     {
         $date = $date ?? now()->toDateString();
 
@@ -239,11 +241,11 @@ class LeaveService extends BaseService
             ->whereIn('status', ['pending', 'approved'])
             ->where(function ($q) use ($startDate, $endDate) {
                 $q->whereBetween('start_date', [$startDate, $endDate])
-                  ->orWhereBetween('end_date', [$startDate, $endDate])
-                  ->orWhere(function ($q) use ($startDate, $endDate) {
-                      $q->where('start_date', '<=', $startDate)
-                        ->where('end_date', '>=', $endDate);
-                  });
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($q) use ($startDate, $endDate) {
+                        $q->where('start_date', '<=', $startDate)
+                            ->where('end_date', '>=', $endDate);
+                    });
             });
 
         if ($excludeId) {
@@ -281,15 +283,15 @@ class LeaveService extends BaseService
     {
         $query = TimeOffCategory::query();
 
-        if (!empty($params['active_only'])) {
+        if (! empty($params['active_only'])) {
             $query->where('is_active', true);
         }
 
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? 15;
 
-        return $paginate 
-            ? $query->latest()->paginate($perPage) 
+        return $paginate
+            ? $query->latest()->paginate($perPage)
             : $query->latest()->get();
     }
 
@@ -308,6 +310,7 @@ class LeaveService extends BaseService
     {
         $category = TimeOffCategory::findOrFail($id);
         $category->update($data);
+
         return $category->fresh();
     }
 

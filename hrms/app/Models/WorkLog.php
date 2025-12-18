@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class WorkLog extends Model
 {
@@ -50,13 +50,13 @@ class WorkLog extends Model
      */
     public function getWorkingMinutesAttribute(): int
     {
-        if (!$this->clock_in || !$this->clock_out) {
+        if (! $this->clock_in || ! $this->clock_out) {
             return 0;
         }
-        
+
         $clockIn = Carbon::parse($this->clock_in);
         $clockOut = Carbon::parse($this->clock_out);
-        
+
         return $clockOut->diffInMinutes($clockIn) - $this->break_minutes;
     }
 
@@ -68,6 +68,7 @@ class WorkLog extends Model
         $minutes = $this->working_minutes;
         $hours = floor($minutes / 60);
         $mins = $minutes % 60;
+
         return sprintf('%d:%02d', $hours, $mins);
     }
 

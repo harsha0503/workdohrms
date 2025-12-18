@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\StaffMember;
-use App\Models\User;
-use App\Models\OfficeLocation;
 use App\Models\Division;
 use App\Models\JobTitle;
+use App\Models\OfficeLocation;
+use App\Models\StaffMember;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 class SeedSampleEmployees extends Command
 {
     protected $signature = 'seed:employees';
+
     protected $description = 'Seed sample employees into the database';
 
     public function handle()
@@ -25,8 +26,9 @@ class SeedSampleEmployees extends Command
         $division = Division::first();
         $jobTitle = JobTitle::first();
 
-        if (!$location || !$division || !$jobTitle) {
+        if (! $location || ! $division || ! $jobTitle) {
             $this->error('Please ensure office locations, divisions, and job titles exist first.');
+
             return 1;
         }
 
@@ -47,8 +49,8 @@ class SeedSampleEmployees extends Command
         foreach ($employees as $index => $emp) {
             // Check if user already exists
             $user = User::where('email', $emp['email'])->first();
-            
-            if (!$user) {
+
+            if (! $user) {
                 // Create user account first
                 $user = User::create([
                     'name' => $emp['full_name'],
@@ -61,13 +63,13 @@ class SeedSampleEmployees extends Command
 
             // Check if staff member already exists for this user
             $existing = StaffMember::where('user_id', $user->id)->first();
-            if (!$existing) {
+            if (! $existing) {
                 StaffMember::create([
                     'user_id' => $user->id,
                     'full_name' => $emp['full_name'],
                     'personal_email' => $emp['email'],
                     'gender' => $emp['gender'],
-                    'mobile_number' => '+91-98765432' . str_pad($index, 2, '0', STR_PAD_LEFT),
+                    'mobile_number' => '+91-98765432'.str_pad($index, 2, '0', STR_PAD_LEFT),
                     'office_location_id' => $location->id,
                     'division_id' => $division->id,
                     'job_title_id' => $jobTitle->id,
@@ -82,7 +84,7 @@ class SeedSampleEmployees extends Command
         }
 
         $this->info("Done! Created {$created} employees.");
+
         return 0;
     }
 }
-

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Models\OfficeLocation;
 use App\Models\StaffMember;
 use App\Models\TimeOffCategory;
 use App\Models\TimeOffRequest;
-use App\Models\OfficeLocation;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,15 +15,18 @@ class LeaveManagementTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected string $token;
+
     protected StaffMember $staff;
+
     protected TimeOffCategory $category;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'Database\\Seeders\\AccessSeeder']);
-        
+
         $this->user = User::factory()->create();
         $this->user->assignRole('administrator');
         $this->token = $this->user->createToken('test-token')->plainTextToken;
@@ -45,7 +48,7 @@ class LeaveManagementTest extends TestCase
 
     public function test_can_list_time_off_categories(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson('/api/time-off-categories');
 
         $response->assertStatus(200)
@@ -54,7 +57,7 @@ class LeaveManagementTest extends TestCase
 
     public function test_can_create_leave_request(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/time-off-requests', [
                 'staff_member_id' => $this->staff->id,
                 'time_off_category_id' => $this->category->id,
@@ -82,8 +85,8 @@ class LeaveManagementTest extends TestCase
             'approval_status' => 'pending',
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->postJson('/api/time-off-requests/' . $request->id . '/process', [
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->postJson('/api/time-off-requests/'.$request->id.'/process', [
                 'action' => 'approved',
                 'approval_remarks' => 'Approved',
             ]);
@@ -108,8 +111,8 @@ class LeaveManagementTest extends TestCase
             'approval_status' => 'pending',
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->postJson('/api/time-off-requests/' . $request->id . '/process', [
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->postJson('/api/time-off-requests/'.$request->id.'/process', [
                 'action' => 'declined',
                 'approval_remarks' => 'Insufficient notice',
             ]);
@@ -124,8 +127,8 @@ class LeaveManagementTest extends TestCase
 
     public function test_can_get_leave_balance(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->getJson('/api/time-off-balance?staff_member_id=' . $this->staff->id);
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->getJson('/api/time-off-balance?staff_member_id='.$this->staff->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure(['success', 'data']);
@@ -133,7 +136,7 @@ class LeaveManagementTest extends TestCase
 
     public function test_validates_date_range(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/time-off-requests', [
                 'staff_member_id' => $this->staff->id,
                 'time_off_category_id' => $this->category->id,

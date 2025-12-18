@@ -17,13 +17,13 @@ class JobCategoryController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         }
 
-        $categories = $request->paginate === 'false' 
-            ? $query->get() 
+        $categories = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $categories
+            'data' => $categories,
         ]);
     }
 
@@ -43,16 +43,17 @@ class JobCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job category created successfully',
-            'data' => $category
+            'data' => $category,
         ], 201);
     }
 
     public function show(JobCategory $jobCategory)
     {
         $jobCategory->load('jobs');
+
         return response()->json([
             'success' => true,
-            'data' => $jobCategory
+            'data' => $jobCategory,
         ]);
     }
 
@@ -72,7 +73,7 @@ class JobCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job category updated successfully',
-            'data' => $jobCategory
+            'data' => $jobCategory,
         ]);
     }
 
@@ -82,7 +83,7 @@ class JobCategoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Job category deleted successfully'
+            'message' => 'Job category deleted successfully',
         ]);
     }
 }

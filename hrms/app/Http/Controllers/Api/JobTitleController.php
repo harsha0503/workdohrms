@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Job Title Controller
- * 
+ *
  * Handles HTTP requests for job title (designation) management.
  */
 class JobTitleController extends Controller
@@ -44,7 +44,7 @@ class JobTitleController extends Controller
 
             return $this->success($result, 'Job titles retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve job titles: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve job titles: '.$e->getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ class JobTitleController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to create job title: ' . $e->getMessage());
+            return $this->serverError('Failed to create job title: '.$e->getMessage());
         }
     }
 
@@ -80,13 +80,13 @@ class JobTitleController extends Controller
         try {
             $jobTitle = $this->service->findJobTitle($id);
 
-            if (!$jobTitle) {
+            if (! $jobTitle) {
                 return $this->notFound('Job title not found');
             }
 
             return $this->success($jobTitle, 'Job title retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve job title: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve job title: '.$e->getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ class JobTitleController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to update job title: ' . $e->getMessage());
+            return $this->serverError('Failed to update job title: '.$e->getMessage());
         }
     }
 
@@ -127,7 +127,7 @@ class JobTitleController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Job title not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to delete job title: ' . $e->getMessage());
+            return $this->serverError('Failed to delete job title: '.$e->getMessage());
         }
     }
 
@@ -147,7 +147,7 @@ class JobTitleController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve job titles: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve job titles: '.$e->getMessage());
         }
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Staff Member Controller
- * 
+ *
  * Handles HTTP requests for staff member management.
  * All business logic is delegated to StaffMemberService.
  */
@@ -33,9 +33,9 @@ class StaffMemberController extends Controller
     {
         try {
             $params = $request->only([
-                'office_location_id', 
-                'division_id', 
-                'status', 
+                'office_location_id',
+                'division_id',
+                'status',
                 'search',
                 'paginate',
                 'per_page',
@@ -48,7 +48,7 @@ class StaffMemberController extends Controller
 
             return $this->success($result, 'Staff members retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve staff members: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve staff members: '.$e->getMessage());
         }
     }
 
@@ -61,7 +61,7 @@ class StaffMemberController extends Controller
             $validated = $this->validateStoreRequest($request);
 
             $staffMember = $this->service->createWithUser(
-                $validated, 
+                $validated,
                 $request->user()?->id
             );
 
@@ -71,7 +71,7 @@ class StaffMemberController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to create staff member: ' . $e->getMessage());
+            return $this->serverError('Failed to create staff member: '.$e->getMessage());
         }
     }
 
@@ -87,7 +87,7 @@ class StaffMemberController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Staff member not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve staff member: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve staff member: '.$e->getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ class StaffMemberController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to update staff member: ' . $e->getMessage());
+            return $this->serverError('Failed to update staff member: '.$e->getMessage());
         }
     }
 
@@ -123,7 +123,7 @@ class StaffMemberController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Staff member not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to deactivate staff member: ' . $e->getMessage());
+            return $this->serverError('Failed to deactivate staff member: '.$e->getMessage());
         }
     }
 
@@ -138,7 +138,7 @@ class StaffMemberController extends Controller
 
             return $this->collection($result, 'Staff dropdown data retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve dropdown data: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve dropdown data: '.$e->getMessage());
         }
     }
 

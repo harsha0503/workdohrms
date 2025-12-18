@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Attendance Regularizations
-        if (!Schema::hasTable('attendance_regularizations')) {
+        if (! Schema::hasTable('attendance_regularizations')) {
             Schema::create('attendance_regularizations', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('staff_member_id')->constrained()->onDelete('cascade');

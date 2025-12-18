@@ -4,49 +4,51 @@
  * HRMS API Verification Script
  * Tests all major endpoints for the newly implemented modules
  */
-
 $baseUrl = 'http://127.0.0.1:8000/api';
 $token = null;
 
-function makeRequest($method, $url, $data = null, $token = null) {
+function makeRequest($method, $url, $data = null, $token = null)
+{
     global $baseUrl;
-    
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $baseUrl . $url);
+    curl_setopt($ch, CURLOPT_URL, $baseUrl.$url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-    
+
     $headers = [
         'Accept: application/json',
-        'Content-Type: application/json'
+        'Content-Type: application/json',
     ];
-    
+
     if ($token) {
-        $headers[] = 'Authorization: Bearer ' . $token;
+        $headers[] = 'Authorization: Bearer '.$token;
     }
-    
+
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    
+
     if ($data) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     }
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    
+
     return [
         'code' => $httpCode,
-        'body' => json_decode($response, true)
+        'body' => json_decode($response, true),
     ];
 }
 
-function test($name, $result) {
+function test($name, $result)
+{
     $status = $result['code'] >= 200 && $result['code'] < 300 ? '✅' : '❌';
     echo sprintf("%s %s (HTTP %d)\n", $status, $name, $result['code']);
     if ($result['code'] >= 400) {
-        echo "   Error: " . json_encode($result['body']) . "\n";
+        echo '   Error: '.json_encode($result['body'])."\n";
     }
+
     return $result['code'] >= 200 && $result['code'] < 300;
 }
 
@@ -59,12 +61,12 @@ echo "📌 AUTHENTICATION\n";
 echo "-------------------------------------------\n";
 $loginResult = makeRequest('POST', '/auth/sign-in', [
     'email' => 'admin@hrms.local',
-    'password' => 'password'
+    'password' => 'password',
 ]);
 test('Login', $loginResult);
 $token = $loginResult['body']['data']['access_token'] ?? null;
 
-if (!$token) {
+if (! $token) {
     echo "❌ Cannot proceed without token!\n";
     exit(1);
 }
@@ -87,7 +89,7 @@ test('Available Assets', makeRequest('GET', '/assets-available', null, $token));
 $assetTypeResult = makeRequest('POST', '/asset-types', [
     'title' => 'Test Laptop',
     'description' => 'Test laptops for verification',
-    'depreciation_rate' => 15.5
+    'depreciation_rate' => 15.5,
 ], $token);
 test('Asset Type - Create', $assetTypeResult);
 $assetTypeId = $assetTypeResult['body']['data']['id'] ?? null;
@@ -97,10 +99,10 @@ if ($assetTypeId) {
     $assetResult = makeRequest('POST', '/assets', [
         'name' => 'MacBook Pro Test',
         'asset_type_id' => $assetTypeId,
-        'serial_number' => 'TEST' . rand(1000, 9999),
+        'serial_number' => 'TEST'.rand(1000, 9999),
         'purchase_date' => '2024-01-15',
         'purchase_cost' => 2499.00,
-        'condition' => 'new'
+        'condition' => 'new',
     ], $token);
     test('Asset - Create', $assetResult);
 }
@@ -114,7 +116,7 @@ test('Training Sessions - List', makeRequest('GET', '/training-sessions', null, 
 // Create Training Type
 $trainingTypeResult = makeRequest('POST', '/training-types', [
     'title' => 'Technical Skills',
-    'description' => 'Technical training programs'
+    'description' => 'Technical training programs',
 ], $token);
 test('Training Type - Create', $trainingTypeResult);
 
@@ -131,7 +133,7 @@ test('Today\'s Interviews', makeRequest('GET', '/interviews/today', null, $token
 // Create Job Category
 $jobCatResult = makeRequest('POST', '/job-categories', [
     'title' => 'Engineering',
-    'description' => 'Software Engineering roles'
+    'description' => 'Software Engineering roles',
 ], $token);
 test('Job Category - Create', $jobCatResult);
 
@@ -145,7 +147,7 @@ test('Pending Onboardings', makeRequest('GET', '/onboardings/pending', null, $to
 $onboardingResult = makeRequest('POST', '/onboarding-templates', [
     'title' => 'New Employee Onboarding',
     'description' => '30-day onboarding checklist',
-    'days_to_complete' => 30
+    'days_to_complete' => 30,
 ], $token);
 test('Onboarding Template - Create', $onboardingResult);
 
@@ -158,7 +160,7 @@ test('Expiring Contracts', makeRequest('GET', '/contracts-expiring', null, $toke
 // Create Contract Type
 $contractTypeResult = makeRequest('POST', '/contract-types', [
     'title' => 'Full-Time Employment',
-    'default_duration_months' => 12
+    'default_duration_months' => 12,
 ], $token);
 test('Contract Type - Create', $contractTypeResult);
 
@@ -175,7 +177,7 @@ test('My Meetings', makeRequest('GET', '/my-meetings', null, $token));
 $meetingTypeResult = makeRequest('POST', '/meeting-types', [
     'title' => 'Team Standup',
     'default_duration' => 15,
-    'color' => '#10b981'
+    'color' => '#10b981',
 ], $token);
 test('Meeting Type - Create', $meetingTypeResult);
 
@@ -183,7 +185,7 @@ test('Meeting Type - Create', $meetingTypeResult);
 $roomResult = makeRequest('POST', '/meeting-rooms', [
     'name' => 'Conference Room A',
     'capacity' => 12,
-    'location' => 'Floor 2'
+    'location' => 'Floor 2',
 ], $token);
 test('Meeting Room - Create', $roomResult);
 
@@ -198,7 +200,7 @@ $shiftResult = makeRequest('POST', '/shifts', [
     'start_time' => '09:00',
     'end_time' => '17:00',
     'break_duration_minutes' => 60,
-    'is_night_shift' => false
+    'is_night_shift' => false,
 ], $token);
 test('Shift - Create', $shiftResult);
 
@@ -214,7 +216,7 @@ $projectResult = makeRequest('POST', '/timesheet-projects', [
     'name' => 'HRMS Development',
     'client_name' => 'Internal',
     'is_billable' => false,
-    'hourly_rate' => 0
+    'hourly_rate' => 0,
 ], $token);
 test('Timesheet Project - Create', $projectResult);
 

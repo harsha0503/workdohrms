@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Job Requisitions
-        if (!Schema::hasTable('job_requisitions')) {
+        if (! Schema::hasTable('job_requisitions')) {
             Schema::create('job_requisitions', function (Blueprint $table) {
                 $table->id();
                 $table->string('title');
@@ -33,14 +33,14 @@ return new class extends Migration
         }
 
         // Add requisition_id to job_postings if not exists
-        if (Schema::hasTable('job_postings') && !Schema::hasColumn('job_postings', 'requisition_id')) {
+        if (Schema::hasTable('job_postings') && ! Schema::hasColumn('job_postings', 'requisition_id')) {
             Schema::table('job_postings', function (Blueprint $table) {
                 $table->foreignId('requisition_id')->nullable()->after('id')->constrained('job_requisitions')->nullOnDelete();
             });
         }
 
         // Offer Templates
-        if (!Schema::hasTable('offer_templates')) {
+        if (! Schema::hasTable('offer_templates')) {
             Schema::create('offer_templates', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -53,7 +53,7 @@ return new class extends Migration
         }
 
         // Offers
-        if (!Schema::hasTable('offers')) {
+        if (! Schema::hasTable('offers')) {
             Schema::create('offers', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('candidate_id')->constrained()->onDelete('cascade');
@@ -77,7 +77,7 @@ return new class extends Migration
         }
 
         // Candidate Assessments
-        if (!Schema::hasTable('candidate_assessments')) {
+        if (! Schema::hasTable('candidate_assessments')) {
             Schema::create('candidate_assessments', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('candidate_id')->constrained()->onDelete('cascade');
@@ -102,14 +102,14 @@ return new class extends Migration
         Schema::dropIfExists('candidate_assessments');
         Schema::dropIfExists('offers');
         Schema::dropIfExists('offer_templates');
-        
+
         if (Schema::hasColumn('job_postings', 'requisition_id')) {
             Schema::table('job_postings', function (Blueprint $table) {
                 $table->dropForeign(['requisition_id']);
                 $table->dropColumn('requisition_id');
             });
         }
-        
+
         Schema::dropIfExists('job_requisitions');
     }
 };

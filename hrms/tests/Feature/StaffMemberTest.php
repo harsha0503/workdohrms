@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\StaffMember;
-use App\Models\OfficeLocation;
 use App\Models\Division;
 use App\Models\JobTitle;
+use App\Models\OfficeLocation;
+use App\Models\StaffMember;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,13 +15,14 @@ class StaffMemberTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected string $token;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'Database\\Seeders\\AccessSeeder']);
-        
+
         $this->user = User::factory()->create();
         $this->user->assignRole('administrator');
         $this->token = $this->user->createToken('test-token')->plainTextToken;
@@ -38,7 +39,7 @@ class StaffMemberTest extends TestCase
 
     public function test_can_list_staff_members(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson('/api/staff-members');
 
         $response->assertStatus(200)
@@ -49,7 +50,7 @@ class StaffMemberTest extends TestCase
     {
         $org = $this->createOrganizationStructure();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/staff-members', [
                 'full_name' => 'John Doe',
                 'email' => 'john.doe@example.com',
@@ -74,10 +75,10 @@ class StaffMemberTest extends TestCase
     public function test_can_show_staff_member(): void
     {
         $org = $this->createOrganizationStructure();
-        
+
         // Create a user first
         $staffUser = User::factory()->create(['name' => 'Jane Smith', 'email' => 'jane@test.com']);
-        
+
         $staff = StaffMember::create([
             'full_name' => 'Jane Smith',
             'hire_date' => '2024-01-01',
@@ -88,8 +89,8 @@ class StaffMemberTest extends TestCase
             'user_id' => $staffUser->id,
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->getJson('/api/staff-members/' . $staff->id);
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->getJson('/api/staff-members/'.$staff->id);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -104,7 +105,7 @@ class StaffMemberTest extends TestCase
     {
         $org = $this->createOrganizationStructure();
         $staffUser = User::factory()->create(['name' => 'Jane Smith', 'email' => 'jane2@test.com']);
-        
+
         $staff = StaffMember::create([
             'full_name' => 'Jane Smith',
             'hire_date' => '2024-01-01',
@@ -113,8 +114,8 @@ class StaffMemberTest extends TestCase
             'user_id' => $staffUser->id,
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->putJson('/api/staff-members/' . $staff->id, [
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->putJson('/api/staff-members/'.$staff->id, [
                 'full_name' => 'Janet Smith',
                 'base_salary' => 65000,
             ]);
@@ -132,7 +133,7 @@ class StaffMemberTest extends TestCase
     {
         $org = $this->createOrganizationStructure();
         $staffUser = User::factory()->create(['name' => 'To Delete', 'email' => 'delete@test.com']);
-        
+
         $staff = StaffMember::create([
             'full_name' => 'To Delete',
             'hire_date' => '2024-01-01',
@@ -140,8 +141,8 @@ class StaffMemberTest extends TestCase
             'user_id' => $staffUser->id,
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->deleteJson('/api/staff-members/' . $staff->id);
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->deleteJson('/api/staff-members/'.$staff->id);
 
         $response->assertStatus(200);
 
@@ -150,7 +151,7 @@ class StaffMemberTest extends TestCase
 
     public function test_validates_required_fields(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/staff-members', []);
 
         $response->assertStatus(422)

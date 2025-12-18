@@ -2,18 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\OfficeLocation;
-use App\Models\Division;
-use App\Models\JobTitle;
-use App\Models\StaffMember;
-use App\Models\WorkLog;
-use App\Models\TimeOffCategory;
-use App\Models\TimeOffRequest;
+use App\Models\CompanyEvent;
 use App\Models\CompanyHoliday;
 use App\Models\CompanyNotice;
-use App\Models\CompanyEvent;
-use Illuminate\Database\Seeder;
+use App\Models\Division;
+use App\Models\JobTitle;
+use App\Models\OfficeLocation;
+use App\Models\StaffMember;
+use App\Models\TimeOffCategory;
+use App\Models\WorkLog;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class DemoDataSeeder extends Seeder
 {
@@ -119,7 +118,7 @@ class DemoDataSeeder extends Seeder
         foreach ($staffMembers as $staff) {
             for ($i = 30; $i >= 0; $i--) {
                 $date = $today->copy()->subDays($i);
-                
+
                 // Skip weekends
                 if ($date->isWeekend()) {
                     continue;
@@ -133,8 +132,8 @@ class DemoDataSeeder extends Seeder
                     'staff_member_id' => $staff->id,
                     'log_date' => $date,
                     'status' => $status,
-                    'clock_in' => $status === 'present' ? '09:' . str_pad(rand(0, 15), 2, '0', STR_PAD_LEFT) : null,
-                    'clock_out' => $status === 'present' ? '18:' . str_pad(rand(0, 30), 2, '0', STR_PAD_LEFT) : null,
+                    'clock_in' => $status === 'present' ? '09:'.str_pad(rand(0, 15), 2, '0', STR_PAD_LEFT) : null,
+                    'clock_out' => $status === 'present' ? '18:'.str_pad(rand(0, 30), 2, '0', STR_PAD_LEFT) : null,
                     'late_minutes' => $status === 'present' ? rand(0, 20) : 0,
                     'working_minutes' => $status === 'present' ? 480 : ($status === 'half_day' ? 240 : 0),
                 ]);

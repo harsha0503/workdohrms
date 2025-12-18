@@ -1,10 +1,16 @@
 <?php
 
+use App\Exceptions\AuthenticationException as AppAuthenticationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,24 +20,94 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Ensure API routes always return JSON for unauthenticated requests
         $middleware->redirectGuestsTo(function (Request $request) {
             if ($request->is('api/*')) {
-                return null; // Don't redirect, let exception handler handle it
+                return null;
             }
+
             return route('login');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Handle unauthenticated API requests - return JSON instead of redirect
+        $exceptions->render(function (AppAuthenticationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return $e->render();
+            }
+        });
+
         $exceptions->render(function (AuthenticationException $e, Request $request) {
-            // Always return JSON for API routes, regardless of Accept header
             if ($request->is('api/*')) {
                 return response()->json([
                     'success' => false,
+                    'data' => null,
                     'message' => 'Unauthenticated. Please provide a valid Bearer token in Authorization header.',
-                    'hint' => 'Use POST /api/auth/sign-in to get a token'
                 ], 401);
+            }
+        });
+
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                $errors = $e->errors();
+                $firstError = collect($errors)->flatten()->first() ?? 'Validation failed';
+
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => $firstError,
+                    'errors' => $errors,
+                ], 422);
+            }
+        });
+
+        $exceptions->render(function (AccessDeniedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => $e->getMessage() ?: 'You do not have permission to perform this action.',
+                ], 403);
+            }
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+            if ($request->is('api/*')) {
+                $model = class_basename($e->getModel());
+
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => "{$model} not found.",
+                ], 404);
+            }
+        });
+
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'The requested resource was not found.',
+                ], 404);
+            }
+        });
+
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'The HTTP method is not allowed for this endpoint.',
+                ], 405);
+            }
+        });
+
+        $exceptions->render(function (\Throwable $e, Request $request) {
+            if ($request->is('api/*') && ! config('app.debug')) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'An unexpected error occurred. Please try again later.',
+                ], 500);
             }
         });
     })->create();

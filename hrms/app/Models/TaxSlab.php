@@ -41,8 +41,9 @@ class TaxSlab extends Model
         if ($income < $this->income_from || $income > $this->income_to) {
             return 0;
         }
-        
+
         $taxableInSlab = min($income - $this->income_from, $this->income_to - $this->income_from);
+
         return $this->fixed_amount + ($taxableInSlab * ($this->percentage / 100));
     }
 

@@ -96,8 +96,8 @@ class AppraisalRecordController extends Controller
     public function myAppraisals(Request $request)
     {
         $staffMember = \App\Models\StaffMember::where('user_id', $request->user()->id)->first();
-        
-        if (!$staffMember) {
+
+        if (! $staffMember) {
             return response()->json(['success' => true, 'data' => []]);
         }
 

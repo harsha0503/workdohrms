@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class TimeOffRequest extends Model
 {
@@ -40,7 +40,7 @@ class TimeOffRequest extends Model
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->request_date)) {
                 $model->request_date = now()->toDateString();

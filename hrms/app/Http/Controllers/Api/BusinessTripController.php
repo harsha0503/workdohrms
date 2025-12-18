@@ -93,7 +93,7 @@ class BusinessTripController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Business trip ' . $validated['action'],
+            'message' => 'Business trip '.$validated['action'],
             'data' => $businessTrip->fresh(['staffMember', 'approvedByUser']),
         ]);
     }

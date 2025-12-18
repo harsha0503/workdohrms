@@ -8,10 +8,10 @@ use Illuminate\Support\Collection;
 
 /**
  * API Response Trait
- * 
+ *
  * Provides standardized API response methods for all controllers.
  * Ensures consistent response structure across all endpoints.
- * 
+ *
  * Response Structure:
  * {
  *   "success": true|false,
@@ -26,8 +26,8 @@ trait ApiResponse
      * Success response with data.
      */
     protected function success(
-        mixed $data = null, 
-        string $message = 'Success', 
+        mixed $data = null,
+        string $message = 'Success',
         int $statusCode = 200
     ): JsonResponse {
         $response = [
@@ -49,7 +49,7 @@ trait ApiResponse
      * Success response for resource creation.
      */
     protected function created(
-        mixed $data = null, 
+        mixed $data = null,
         string $message = 'Resource created successfully'
     ): JsonResponse {
         return $this->success($data, $message, 201);
@@ -71,7 +71,7 @@ trait ApiResponse
      * Error response.
      */
     protected function error(
-        string $message = 'An error occurred', 
+        string $message = 'An error occurred',
         int $statusCode = 400,
         mixed $errors = null
     ): JsonResponse {
@@ -100,7 +100,7 @@ trait ApiResponse
      * Validation error response.
      */
     protected function validationError(
-        mixed $errors, 
+        mixed $errors,
         string $message = 'Validation failed'
     ): JsonResponse {
         return response()->json([

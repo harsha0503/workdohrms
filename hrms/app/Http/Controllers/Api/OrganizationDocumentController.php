@@ -17,7 +17,7 @@ class OrganizationDocumentController extends Controller
             $query->where('document_type_id', $request->document_type_id);
         }
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         $documents = $request->boolean('paginate', true)
@@ -85,7 +85,7 @@ class OrganizationDocumentController extends Controller
 
         if ($request->hasFile('file')) {
             Storage::disk('public')->delete($organizationDocument->file_path);
-            
+
             $file = $request->file('file');
             $validated['file_path'] = $file->store('organization-documents', 'public');
             $validated['original_name'] = $file->getClientOriginalName();

@@ -18,6 +18,7 @@ class TimesheetProjectController extends Controller
         }
 
         $projects = $request->paginate === 'false' ? $query->get() : $query->paginate($request->per_page ?? 15);
+
         return response()->json(['success' => true, 'data' => $projects]);
     }
 
@@ -36,6 +37,7 @@ class TimesheetProjectController extends Controller
         }
 
         $project = TimesheetProject::create($request->all());
+
         return response()->json(['success' => true, 'message' => 'Project created', 'data' => $project], 201);
     }
 
@@ -47,12 +49,14 @@ class TimesheetProjectController extends Controller
     public function update(Request $request, TimesheetProject $timesheetProject)
     {
         $timesheetProject->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $timesheetProject]);
     }
 
     public function destroy(TimesheetProject $timesheetProject)
     {
         $timesheetProject->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 }

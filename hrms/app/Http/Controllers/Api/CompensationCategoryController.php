@@ -51,7 +51,7 @@ class CompensationCategoryController extends Controller
     public function update(Request $request, CompensationCategory $compensationCategory)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:compensation_categories,title,' . $compensationCategory->id,
+            'title' => 'sometimes|required|string|max:255|unique:compensation_categories,title,'.$compensationCategory->id,
             'notes' => 'nullable|string',
             'is_active' => 'boolean',
         ]);

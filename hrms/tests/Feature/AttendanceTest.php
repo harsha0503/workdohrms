@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\StaffMember;
-use App\Models\WorkLog;
 use App\Models\OfficeLocation;
+use App\Models\StaffMember;
+use App\Models\User;
+use App\Models\WorkLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,14 +14,16 @@ class AttendanceTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected string $token;
+
     protected StaffMember $staff;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'Database\\Seeders\\AccessSeeder']);
-        
+
         $this->user = User::factory()->create();
         $this->user->assignRole('administrator');
         $this->token = $this->user->createToken('test-token')->plainTextToken;
@@ -37,7 +39,7 @@ class AttendanceTest extends TestCase
 
     public function test_can_clock_in(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/clock-in');
 
         $response->assertStatus(200)
@@ -50,7 +52,7 @@ class AttendanceTest extends TestCase
 
     public function test_can_create_work_log(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/work-logs', [
                 'staff_member_id' => $this->staff->id,
                 'log_date' => now()->subDays(5)->toDateString(),
@@ -74,9 +76,9 @@ class AttendanceTest extends TestCase
         $startDate = now()->startOfMonth()->toDateString();
         $endDate = now()->endOfMonth()->toDateString();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->getJson('/api/attendance-summary?staff_member_id=' . $this->staff->id . 
-                      '&start_date=' . $startDate . '&end_date=' . $endDate);
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->getJson('/api/attendance-summary?staff_member_id='.$this->staff->id.
+                      '&start_date='.$startDate.'&end_date='.$endDate);
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);

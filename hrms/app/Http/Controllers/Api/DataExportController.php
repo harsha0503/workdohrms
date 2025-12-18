@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\StaffMember;
-use App\Models\WorkLog;
-use App\Models\TimeOffRequest;
 use App\Models\SalarySlip;
+use App\Models\StaffMember;
+use App\Models\TimeOffRequest;
+use App\Models\WorkLog;
 use Illuminate\Http\Request;
 
 class DataExportController extends Controller
@@ -32,7 +32,7 @@ class DataExportController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="staff_members_' . now()->format('Y-m-d') . '.csv"',
+            'Content-Disposition' => 'attachment; filename="staff_members_'.now()->format('Y-m-d').'.csv"',
         ];
 
         $columns = ['Staff Code', 'First Name', 'Last Name', 'Email', 'Phone', 'Date of Birth', 'Gender', 'Hire Date', 'Base Salary', 'Status', 'Office Location', 'Division', 'Job Title'];
@@ -86,7 +86,7 @@ class DataExportController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="attendance_' . $request->start_date . '_to_' . $request->end_date . '.csv"',
+            'Content-Disposition' => 'attachment; filename="attendance_'.$request->start_date.'_to_'.$request->end_date.'.csv"',
         ];
 
         $columns = ['Staff Code', 'Staff Name', 'Date', 'Status', 'Clock In', 'Clock Out', 'Late (mins)', 'Overtime (mins)', 'Early Leave (mins)'];
@@ -138,7 +138,7 @@ class DataExportController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="leaves_' . $request->year . '.csv"',
+            'Content-Disposition' => 'attachment; filename="leaves_'.$request->year.'.csv"',
         ];
 
         $columns = ['Staff Code', 'Staff Name', 'Category', 'Start Date', 'End Date', 'Days', 'Status', 'Reason'];
@@ -181,7 +181,7 @@ class DataExportController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="payroll_' . $request->salary_period . '.csv"',
+            'Content-Disposition' => 'attachment; filename="payroll_'.$request->salary_period.'.csv"',
         ];
 
         $columns = ['Slip Reference', 'Staff Code', 'Staff Name', 'Division', 'Basic Salary', 'Total Earnings', 'Total Deductions', 'Net Payable', 'Status'];

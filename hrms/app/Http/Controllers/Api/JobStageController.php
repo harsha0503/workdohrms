@@ -15,7 +15,7 @@ class JobStageController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $stages
+            'data' => $stages,
         ]);
     }
 
@@ -32,7 +32,7 @@ class JobStageController extends Controller
         }
 
         $maxOrder = JobStage::max('order') ?? 0;
-        
+
         $stage = JobStage::create([
             'title' => $request->title,
             'color' => $request->color ?? '#6366f1',
@@ -43,7 +43,7 @@ class JobStageController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job stage created successfully',
-            'data' => $stage
+            'data' => $stage,
         ], 201);
     }
 
@@ -51,7 +51,7 @@ class JobStageController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => $jobStage
+            'data' => $jobStage,
         ]);
     }
 
@@ -72,7 +72,7 @@ class JobStageController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job stage updated successfully',
-            'data' => $jobStage
+            'data' => $jobStage,
         ]);
     }
 
@@ -82,7 +82,7 @@ class JobStageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Job stage deleted successfully'
+            'message' => 'Job stage deleted successfully',
         ]);
     }
 
@@ -105,7 +105,7 @@ class JobStageController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Stages reordered successfully',
-            'data' => JobStage::orderBy('order')->get()
+            'data' => JobStage::orderBy('order')->get(),
         ]);
     }
 }

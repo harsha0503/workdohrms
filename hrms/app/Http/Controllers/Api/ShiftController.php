@@ -13,6 +13,7 @@ class ShiftController extends Controller
     public function index(Request $request)
     {
         $shifts = Shift::withCount('assignments')->get();
+
         return response()->json(['success' => true, 'data' => $shifts]);
     }
 
@@ -33,24 +34,28 @@ class ShiftController extends Controller
         }
 
         $shift = Shift::create($request->all());
+
         return response()->json(['success' => true, 'message' => 'Shift created', 'data' => $shift], 201);
     }
 
     public function show(Shift $shift)
     {
         $shift->load('assignments.staffMember');
+
         return response()->json(['success' => true, 'data' => $shift]);
     }
 
     public function update(Request $request, Shift $shift)
     {
         $shift->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $shift]);
     }
 
     public function destroy(Shift $shift)
     {
         $shift->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 
@@ -82,10 +87,10 @@ class ShiftController extends Controller
 
         if ($request->date) {
             $query->where('effective_from', '<=', $request->date)
-                  ->where(function($q) use ($request) {
-                      $q->whereNull('effective_to')
+                ->where(function ($q) use ($request) {
+                    $q->whereNull('effective_to')
                         ->orWhere('effective_to', '>=', $request->date);
-                  });
+                });
         }
 
         return response()->json(['success' => true, 'data' => $query->get()]);

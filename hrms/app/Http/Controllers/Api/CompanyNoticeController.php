@@ -20,7 +20,7 @@ class CompanyNoticeController extends Controller
             $query->featured();
         }
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         $notices = $request->boolean('paginate', true)
@@ -47,7 +47,7 @@ class CompanyNoticeController extends Controller
         $notice = CompanyNotice::create(collect($validated)->except('recipient_ids')->toArray());
 
         // Attach recipients if not company-wide
-        if (!($validated['is_company_wide'] ?? true) && !empty($validated['recipient_ids'])) {
+        if (! ($validated['is_company_wide'] ?? true) && ! empty($validated['recipient_ids'])) {
             $notice->recipients()->attach($validated['recipient_ids']);
         }
 
@@ -99,8 +99,8 @@ class CompanyNoticeController extends Controller
     public function markAsRead(Request $request, CompanyNotice $companyNotice)
     {
         $staffMember = StaffMember::where('user_id', $request->user()->id)->first();
-        
-        if (!$staffMember) {
+
+        if (! $staffMember) {
             return response()->json([
                 'success' => false,
                 'message' => 'Staff member not found',

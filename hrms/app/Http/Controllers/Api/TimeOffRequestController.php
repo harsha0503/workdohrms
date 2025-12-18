@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Time Off Request Controller
- * 
+ *
  * Handles HTTP requests for leave/time-off management.
  */
 class TimeOffRequestController extends Controller
@@ -49,7 +49,7 @@ class TimeOffRequestController extends Controller
 
             return $this->success($result, 'Leave requests retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve leave requests: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve leave requests: '.$e->getMessage());
         }
     }
 
@@ -83,7 +83,7 @@ class TimeOffRequestController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to create leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to create leave request: '.$e->getMessage());
         }
     }
 
@@ -95,13 +95,13 @@ class TimeOffRequestController extends Controller
         try {
             $request = $this->service->findById($id);
 
-            if (!$request) {
+            if (! $request) {
                 return $this->notFound('Leave request not found');
             }
 
             return $this->success($request, 'Leave request retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve leave request: '.$e->getMessage());
         }
     }
 
@@ -126,7 +126,7 @@ class TimeOffRequestController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to update leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to update leave request: '.$e->getMessage());
         }
     }
 
@@ -142,7 +142,7 @@ class TimeOffRequestController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Leave request not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to delete leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to delete leave request: '.$e->getMessage());
         }
     }
 
@@ -161,7 +161,7 @@ class TimeOffRequestController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Leave request not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to approve leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to approve leave request: '.$e->getMessage());
         }
     }
 
@@ -185,7 +185,7 @@ class TimeOffRequestController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to reject leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to reject leave request: '.$e->getMessage());
         }
     }
 
@@ -201,7 +201,7 @@ class TimeOffRequestController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Leave request not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to cancel leave request: ' . $e->getMessage());
+            return $this->serverError('Failed to cancel leave request: '.$e->getMessage());
         }
     }
 
@@ -216,7 +216,7 @@ class TimeOffRequestController extends Controller
 
             return $this->success($balance, 'Leave balance retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve leave balance: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve leave balance: '.$e->getMessage());
         }
     }
 
@@ -231,7 +231,7 @@ class TimeOffRequestController extends Controller
 
             return $this->success($stats, 'Leave statistics retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve leave statistics: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve leave statistics: '.$e->getMessage());
         }
     }
 
@@ -246,7 +246,7 @@ class TimeOffRequestController extends Controller
 
             return $this->collection($employees, 'Employees on leave retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve employees on leave: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve employees on leave: '.$e->getMessage());
         }
     }
 }

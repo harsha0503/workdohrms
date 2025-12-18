@@ -43,7 +43,7 @@ class InterviewSchedule extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('scheduled_date', '>=', now()->toDateString())
-                     ->where('status', 'scheduled');
+            ->where('status', 'scheduled');
     }
 
     public function scopeToday($query)

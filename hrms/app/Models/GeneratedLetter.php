@@ -27,7 +27,7 @@ class GeneratedLetter extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->reference_number)) {
                 $model->reference_number = static::generateReference();
@@ -40,6 +40,7 @@ class GeneratedLetter extends Model
         $prefix = 'LTR';
         $date = now()->format('Ymd');
         $random = strtoupper(substr(uniqid(), -4));
+
         return "{$prefix}-{$date}-{$random}";
     }
 

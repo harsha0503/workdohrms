@@ -2,24 +2,27 @@
 
 namespace App\Services;
 
-use App\Models\StaffMember;
-use App\Models\WorkLog;
-use App\Models\TimeOffRequest;
-use App\Models\SalarySlip;
 use App\Models\CompanyEvent;
 use App\Models\CompanyNotice;
+use App\Models\SalarySlip;
+use App\Models\StaffMember;
+use App\Models\TimeOffRequest;
+use App\Models\WorkLog;
 use Carbon\Carbon;
 
 /**
  * Dashboard Service
- * 
+ *
  * Aggregates data for dashboard displays and reporting.
  */
 class DashboardService
 {
     protected StaffMemberService $staffService;
+
     protected AttendanceService $attendanceService;
+
     protected LeaveService $leaveService;
+
     protected PayrollService $payrollService;
 
     public function __construct(
@@ -100,6 +103,7 @@ class DashboardService
                 if ($birthday->lt($today)) {
                     $birthday->addYear();
                 }
+
                 return $birthday->diffInDays($today) <= $days;
             })
             ->sortBy(function ($employee) use ($today) {
@@ -107,6 +111,7 @@ class DashboardService
                 if ($birthday->lt($today)) {
                     $birthday->addYear();
                 }
+
                 return $birthday;
             })
             ->take(5)
@@ -115,6 +120,7 @@ class DashboardService
                 if ($birthday->lt($today)) {
                     $birthday->addYear();
                 }
+
                 return [
                     'id' => $employee->id,
                     'name' => $employee->full_name,
@@ -142,8 +148,8 @@ class DashboardService
 
         foreach ($leaveRequests as $request) {
             $activities[] = [
-                'id' => 'leave_' . $request->id,
-                'action' => 'Leave ' . ucfirst($request->status),
+                'id' => 'leave_'.$request->id,
+                'action' => 'Leave '.ucfirst($request->status),
                 'user' => $request->staffMember?->full_name ?? 'Unknown',
                 'time' => $request->updated_at?->diffForHumans() ?? 'Recently',
                 'type' => 'leave',
@@ -158,7 +164,7 @@ class DashboardService
 
         foreach ($newStaff as $staff) {
             $activities[] = [
-                'id' => 'staff_' . $staff->id,
+                'id' => 'staff_'.$staff->id,
                 'action' => 'New employee added',
                 'user' => $staff->full_name,
                 'time' => $staff->created_at?->diffForHumans() ?? 'Recently',
@@ -176,10 +182,10 @@ class DashboardService
 
         foreach ($attendance as $log) {
             $activities[] = [
-                'id' => 'attendance_' . $log->id,
+                'id' => 'attendance_'.$log->id,
                 'action' => $log->clock_out ? 'Clocked out' : 'Clocked in',
                 'user' => $log->staffMember?->full_name ?? 'Unknown',
-                'time' => $log->clock_out 
+                'time' => $log->clock_out
                     ? Carbon::parse($log->clock_out)->diffForHumans()
                     : Carbon::parse($log->clock_in)->diffForHumans(),
                 'type' => 'attendance',
@@ -241,13 +247,13 @@ class DashboardService
     public function getEmployeeGrowthTrend(): array
     {
         $data = [];
-        
+
         for ($i = 11; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $count = StaffMember::whereDate('hire_date', '<=', $date->endOfMonth())
                 ->whereNull('deleted_at')
                 ->count();
-            
+
             $data[] = [
                 'month' => $date->format('M'),
                 'year' => $date->year,

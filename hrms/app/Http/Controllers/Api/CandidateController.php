@@ -26,20 +26,20 @@ class CandidateController extends Controller
             $query->where('is_archived', false);
         }
         if ($request->search) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('email', 'like', "%{$request->search}%")
-                  ->orWhere('phone', 'like', "%{$request->search}%");
+                    ->orWhere('email', 'like', "%{$request->search}%")
+                    ->orWhere('phone', 'like', "%{$request->search}%");
             });
         }
 
-        $candidates = $request->paginate === 'false' 
-            ? $query->get() 
+        $candidates = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $candidates
+            'data' => $candidates,
         ]);
     }
 
@@ -71,16 +71,17 @@ class CandidateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Candidate created successfully',
-            'data' => $candidate
+            'data' => $candidate,
         ], 201);
     }
 
     public function show(Candidate $candidate)
     {
         $candidate->load(['applications.job', 'applications.stage']);
+
         return response()->json([
             'success' => true,
-            'data' => $candidate
+            'data' => $candidate,
         ]);
     }
 
@@ -88,7 +89,7 @@ class CandidateController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:candidates,email,' . $candidate->id,
+            'email' => 'sometimes|required|email|unique:candidates,email,'.$candidate->id,
             'status' => 'nullable|in:new,screening,interview,offered,hired,rejected',
         ]);
 
@@ -101,7 +102,7 @@ class CandidateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Candidate updated successfully',
-            'data' => $candidate
+            'data' => $candidate,
         ]);
     }
 
@@ -111,7 +112,7 @@ class CandidateController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Candidate deleted successfully'
+            'message' => 'Candidate deleted successfully',
         ]);
     }
 
@@ -122,7 +123,7 @@ class CandidateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Candidate archived successfully',
-            'data' => $candidate
+            'data' => $candidate,
         ]);
     }
 
@@ -144,8 +145,8 @@ class CandidateController extends Controller
         // Create staff member from candidate
         $staffMember = StaffMember::create([
             'first_name' => explode(' ', $candidate->name)[0],
-            'last_name' => count(explode(' ', $candidate->name)) > 1 
-                ? implode(' ', array_slice(explode(' ', $candidate->name), 1)) 
+            'last_name' => count(explode(' ', $candidate->name)) > 1
+                ? implode(' ', array_slice(explode(' ', $candidate->name), 1))
                 : '',
             'email' => $candidate->email,
             'phone' => $candidate->phone,
@@ -167,7 +168,7 @@ class CandidateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Candidate converted to employee successfully',
-            'data' => $staffMember->load(['officeLocation', 'division', 'jobTitle'])
+            'data' => $staffMember->load(['officeLocation', 'division', 'jobTitle']),
         ]);
     }
 }

@@ -86,7 +86,7 @@ class LetterTemplateController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        if (($validated['is_default'] ?? false) && !$letterTemplate->is_default) {
+        if (($validated['is_default'] ?? false) && ! $letterTemplate->is_default) {
             LetterTemplate::ofType($validated['template_type'] ?? $letterTemplate->template_type)
                 ->where('id', '!=', $letterTemplate->id)
                 ->update(['is_default' => false]);

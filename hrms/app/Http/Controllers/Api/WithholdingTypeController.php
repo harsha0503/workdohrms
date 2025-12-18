@@ -55,7 +55,7 @@ class WithholdingTypeController extends Controller
     public function update(Request $request, WithholdingType $withholdingType)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:withholding_types,title,' . $withholdingType->id,
+            'title' => 'sometimes|required|string|max:255|unique:withholding_types,title,'.$withholdingType->id,
             'notes' => 'nullable|string',
             'is_statutory' => 'boolean',
             'is_active' => 'boolean',

@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Division Controller
- * 
+ *
  * Handles HTTP requests for division (department) management.
  */
 class DivisionController extends Controller
@@ -44,7 +44,7 @@ class DivisionController extends Controller
 
             return $this->success($result, 'Divisions retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve divisions: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve divisions: '.$e->getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ class DivisionController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to create division: ' . $e->getMessage());
+            return $this->serverError('Failed to create division: '.$e->getMessage());
         }
     }
 
@@ -80,13 +80,13 @@ class DivisionController extends Controller
         try {
             $division = $this->service->findDivision($id);
 
-            if (!$division) {
+            if (! $division) {
                 return $this->notFound('Division not found');
             }
 
             return $this->success($division, 'Division retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve division: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve division: '.$e->getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ class DivisionController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to update division: ' . $e->getMessage());
+            return $this->serverError('Failed to update division: '.$e->getMessage());
         }
     }
 
@@ -127,7 +127,7 @@ class DivisionController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Division not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to delete division: ' . $e->getMessage());
+            return $this->serverError('Failed to delete division: '.$e->getMessage());
         }
     }
 
@@ -147,7 +147,7 @@ class DivisionController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve divisions: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve divisions: '.$e->getMessage());
         }
     }
 }

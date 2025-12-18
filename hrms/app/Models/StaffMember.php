@@ -55,7 +55,8 @@ class StaffMember extends Model
         $prefix = 'STF';
         $lastStaff = static::withTrashed()->orderBy('id', 'desc')->first();
         $nextId = $lastStaff ? $lastStaff->id + 1 : 1;
-        return $prefix . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+
+        return $prefix.str_pad($nextId, 5, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -64,7 +65,7 @@ class StaffMember extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->staff_code)) {
                 $model->staff_code = static::generateStaffCode();

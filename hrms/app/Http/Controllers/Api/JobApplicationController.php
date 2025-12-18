@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\JobApplication;
 use App\Models\ApplicationNote;
 use App\Models\Job;
+use App\Models\JobApplication;
 use App\Models\JobStage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -26,13 +26,13 @@ class JobApplicationController extends Controller
             $query->where('status', $request->status);
         }
 
-        $applications = $request->paginate === 'false' 
-            ? $query->get() 
+        $applications = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $applications
+            'data' => $applications,
         ]);
     }
 
@@ -55,7 +55,7 @@ class JobApplicationController extends Controller
         if ($existing) {
             return response()->json([
                 'success' => false,
-                'message' => 'Candidate has already applied for this job'
+                'message' => 'Candidate has already applied for this job',
             ], 400);
         }
 
@@ -74,16 +74,17 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Application submitted successfully',
-            'data' => $application->load(['job', 'candidate', 'stage'])
+            'data' => $application->load(['job', 'candidate', 'stage']),
         ], 201);
     }
 
     public function show(JobApplication $jobApplication)
     {
         $jobApplication->load(['job', 'candidate', 'stage', 'interviews', 'applicationNotes.user']);
+
         return response()->json([
             'success' => true,
-            'data' => $jobApplication
+            'data' => $jobApplication,
         ]);
     }
 
@@ -102,7 +103,7 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Application moved to new stage',
-            'data' => $jobApplication->load('stage')
+            'data' => $jobApplication->load('stage'),
         ]);
     }
 
@@ -125,7 +126,7 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Application rated successfully',
-            'data' => $jobApplication
+            'data' => $jobApplication,
         ]);
     }
 
@@ -148,7 +149,7 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Note added successfully',
-            'data' => $note->load('user')
+            'data' => $note->load('user'),
         ]);
     }
 
@@ -159,7 +160,7 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Candidate shortlisted',
-            'data' => $jobApplication
+            'data' => $jobApplication,
         ]);
     }
 
@@ -170,7 +171,7 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Application rejected',
-            'data' => $jobApplication
+            'data' => $jobApplication,
         ]);
     }
 
@@ -182,7 +183,7 @@ class JobApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Candidate hired successfully',
-            'data' => $jobApplication
+            'data' => $jobApplication,
         ]);
     }
 }

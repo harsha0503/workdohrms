@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Office Location Controller
- * 
+ *
  * Handles HTTP requests for office location (branch) management.
  */
 class OfficeLocationController extends Controller
@@ -43,7 +43,7 @@ class OfficeLocationController extends Controller
 
             return $this->success($result, 'Office locations retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve office locations: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve office locations: '.$e->getMessage());
         }
     }
 
@@ -67,7 +67,7 @@ class OfficeLocationController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to create office location: ' . $e->getMessage());
+            return $this->serverError('Failed to create office location: '.$e->getMessage());
         }
     }
 
@@ -79,13 +79,13 @@ class OfficeLocationController extends Controller
         try {
             $location = $this->service->findLocation($id);
 
-            if (!$location) {
+            if (! $location) {
                 return $this->notFound('Office location not found');
             }
 
             return $this->success($location, 'Office location retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve office location: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve office location: '.$e->getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ class OfficeLocationController extends Controller
     {
         try {
             $validated = $request->validate([
-                'title' => 'sometimes|required|string|max:255|unique:office_locations,title,' . $id,
+                'title' => 'sometimes|required|string|max:255|unique:office_locations,title,'.$id,
                 'address' => 'nullable|string',
                 'contact_phone' => 'nullable|string|max:20',
                 'contact_email' => 'nullable|email',
@@ -111,7 +111,7 @@ class OfficeLocationController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to update office location: ' . $e->getMessage());
+            return $this->serverError('Failed to update office location: '.$e->getMessage());
         }
     }
 
@@ -127,7 +127,7 @@ class OfficeLocationController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Office location not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to delete office location: ' . $e->getMessage());
+            return $this->serverError('Failed to delete office location: '.$e->getMessage());
         }
     }
 }

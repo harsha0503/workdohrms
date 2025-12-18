@@ -23,7 +23,7 @@ class MediaDirectoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $directories
+            'data' => $directories,
         ]);
     }
 
@@ -51,16 +51,17 @@ class MediaDirectoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Directory created successfully',
-            'data' => $directory
+            'data' => $directory,
         ], 201);
     }
 
     public function show(MediaDirectory $mediaDirectory)
     {
         $mediaDirectory->load(['parent', 'children', 'files']);
+
         return response()->json([
             'success' => true,
-            'data' => $mediaDirectory
+            'data' => $mediaDirectory,
         ]);
     }
 
@@ -81,7 +82,7 @@ class MediaDirectoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Directory renamed successfully',
-            'data' => $mediaDirectory
+            'data' => $mediaDirectory,
         ]);
     }
 
@@ -92,7 +93,7 @@ class MediaDirectoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Directory deleted successfully'
+            'message' => 'Directory deleted successfully',
         ]);
     }
 
@@ -112,7 +113,7 @@ class MediaDirectoryController extends Controller
             if ($parent && str_starts_with($parent->path, $mediaDirectory->path)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cannot move directory into its own subdirectory'
+                    'message' => 'Cannot move directory into its own subdirectory',
                 ], 400);
             }
         }
@@ -124,7 +125,7 @@ class MediaDirectoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Directory moved successfully',
-            'data' => $mediaDirectory
+            'data' => $mediaDirectory,
         ]);
     }
 }

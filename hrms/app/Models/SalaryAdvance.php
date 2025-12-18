@@ -37,7 +37,7 @@ class SalaryAdvance extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->remaining_balance)) {
                 $model->remaining_balance = $model->principal_amount;
@@ -67,11 +67,11 @@ class SalaryAdvance extends Model
     {
         $deductionAmount = $amount ?? $this->monthly_deduction;
         $this->remaining_balance = max(0, $this->remaining_balance - $deductionAmount);
-        
+
         if ($this->remaining_balance <= 0) {
             $this->status = 'completed';
         }
-        
+
         $this->save();
     }
 

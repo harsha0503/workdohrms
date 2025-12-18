@@ -6,11 +6,10 @@ use App\Models\Contract;
 use App\Models\ContractType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 /**
  * Contract Service
- * 
+ *
  * Handles all business logic for employee contracts.
  */
 class ContractService extends BaseService
@@ -41,18 +40,18 @@ class ContractService extends BaseService
 
         $query = $this->applyFilters($query, $params);
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query = $this->applySearch($query, $params['search']);
         }
 
         // Expiring soon filter (within 30 days)
-        if (!empty($params['expiring_soon'])) {
+        if (! empty($params['expiring_soon'])) {
             $query->where('end_date', '>=', now())
-                  ->where('end_date', '<=', now()->addDays(30));
+                ->where('end_date', '<=', now()->addDays(30));
         }
 
         // Expired filter
-        if (!empty($params['expired'])) {
+        if (! empty($params['expired'])) {
             $query->where('end_date', '<', now());
         }
 
@@ -61,8 +60,8 @@ class ContractService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -77,7 +76,7 @@ class ContractService extends BaseService
 
         // Generate contract number if not provided
         if (empty($data['contract_number'])) {
-            $data['contract_number'] = 'CTR-' . date('Y') . '-' . str_pad(Contract::count() + 1, 5, '0', STR_PAD_LEFT);
+            $data['contract_number'] = 'CTR-'.date('Y').'-'.str_pad(Contract::count() + 1, 5, '0', STR_PAD_LEFT);
         }
 
         $data['status'] = $data['status'] ?? 'active';
@@ -92,6 +91,7 @@ class ContractService extends BaseService
     {
         $contract = Contract::findOrFail($id);
         $contract->update($data);
+
         return $contract->fresh($this->defaultRelations);
     }
 
@@ -114,6 +114,7 @@ class ContractService extends BaseService
             'termination_date' => $data['termination_date'] ?? now(),
             'termination_reason' => $data['termination_reason'] ?? null,
         ]);
+
         return $contract->fresh($this->defaultRelations);
     }
 
@@ -232,6 +233,7 @@ class ContractService extends BaseService
     {
         $type = ContractType::findOrFail($id);
         $type->update($data);
+
         return $type->fresh();
     }
 

@@ -12,6 +12,7 @@ class MeetingTypeController extends Controller
     public function index(Request $request)
     {
         $types = MeetingType::withCount('meetings')->get();
+
         return response()->json(['success' => true, 'data' => $types]);
     }
 
@@ -28,6 +29,7 @@ class MeetingTypeController extends Controller
         }
 
         $type = MeetingType::create($request->all());
+
         return response()->json(['success' => true, 'message' => 'Created', 'data' => $type], 201);
     }
 
@@ -39,12 +41,14 @@ class MeetingTypeController extends Controller
     public function update(Request $request, MeetingType $meetingType)
     {
         $meetingType->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $meetingType]);
     }
 
     public function destroy(MeetingType $meetingType)
     {
         $meetingType->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 }

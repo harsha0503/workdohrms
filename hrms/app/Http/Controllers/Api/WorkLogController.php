@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Work Log Controller
- * 
+ *
  * Handles HTTP requests for attendance/work log management.
  */
 class WorkLogController extends Controller
@@ -48,7 +48,7 @@ class WorkLogController extends Controller
 
             return $this->success($result, 'Work logs retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve work logs: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve work logs: '.$e->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class WorkLogController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to record attendance: ' . $e->getMessage());
+            return $this->serverError('Failed to record attendance: '.$e->getMessage());
         }
     }
 
@@ -85,13 +85,13 @@ class WorkLogController extends Controller
         try {
             $workLog = $this->service->findById($id);
 
-            if (!$workLog) {
+            if (! $workLog) {
                 return $this->notFound('Work log not found');
             }
 
             return $this->success($workLog, 'Work log retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve work log: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve work log: '.$e->getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ class WorkLogController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to update work log: ' . $e->getMessage());
+            return $this->serverError('Failed to update work log: '.$e->getMessage());
         }
     }
 
@@ -132,7 +132,7 @@ class WorkLogController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->notFound('Work log not found');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to delete work log: ' . $e->getMessage());
+            return $this->serverError('Failed to delete work log: '.$e->getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ class WorkLogController extends Controller
         try {
             $staffMemberId = $request->input('staff_member_id') ?? $request->user()->staffMember?->id;
 
-            if (!$staffMemberId) {
+            if (! $staffMemberId) {
                 return $this->error('Staff member not found', 404);
             }
 
@@ -167,7 +167,7 @@ class WorkLogController extends Controller
         try {
             $staffMemberId = $request->input('staff_member_id') ?? $request->user()->staffMember?->id;
 
-            if (!$staffMemberId) {
+            if (! $staffMemberId) {
                 return $this->error('Staff member not found', 404);
             }
 
@@ -192,7 +192,7 @@ class WorkLogController extends Controller
 
             return $this->success($summary, 'Today\'s attendance summary retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve attendance summary: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve attendance summary: '.$e->getMessage());
         }
     }
 
@@ -207,7 +207,7 @@ class WorkLogController extends Controller
 
             return $this->collection($report, 'Attendance report generated successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to generate attendance report: ' . $e->getMessage());
+            return $this->serverError('Failed to generate attendance report: '.$e->getMessage());
         }
     }
 
@@ -224,7 +224,7 @@ class WorkLogController extends Controller
 
             return $this->success($attendance, 'Monthly attendance retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve monthly attendance: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve monthly attendance: '.$e->getMessage());
         }
     }
 
@@ -236,7 +236,7 @@ class WorkLogController extends Controller
         try {
             $staffMemberId = $request->input('staff_member_id') ?? $request->user()->staffMember?->id;
 
-            if (!$staffMemberId) {
+            if (! $staffMemberId) {
                 return $this->error('Staff member not found', 404);
             }
 
@@ -244,7 +244,7 @@ class WorkLogController extends Controller
 
             return $this->success($status, 'Current status retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve current status: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve current status: '.$e->getMessage());
         }
     }
 
@@ -269,7 +269,7 @@ class WorkLogController extends Controller
         } catch (ValidationException $e) {
             return $this->validationError($e->errors());
         } catch (\Exception $e) {
-            return $this->serverError('Failed to record bulk attendance: ' . $e->getMessage());
+            return $this->serverError('Failed to record bulk attendance: '.$e->getMessage());
         }
     }
 }

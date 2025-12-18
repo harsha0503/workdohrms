@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\OnboardingTemplate;
 use App\Models\OnboardingTask;
+use App\Models\OnboardingTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,8 +18,8 @@ class OnboardingTemplateController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         }
 
-        $templates = $request->paginate === 'false' 
-            ? $query->get() 
+        $templates = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json(['success' => true, 'data' => $templates]);
@@ -42,13 +42,14 @@ class OnboardingTemplateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Onboarding template created successfully',
-            'data' => $template
+            'data' => $template,
         ], 201);
     }
 
     public function show(OnboardingTemplate $onboardingTemplate)
     {
         $onboardingTemplate->load('tasks');
+
         return response()->json(['success' => true, 'data' => $onboardingTemplate]);
     }
 
@@ -67,13 +68,14 @@ class OnboardingTemplateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Template updated successfully',
-            'data' => $onboardingTemplate
+            'data' => $onboardingTemplate,
         ]);
     }
 
     public function destroy(OnboardingTemplate $onboardingTemplate)
     {
         $onboardingTemplate->delete();
+
         return response()->json(['success' => true, 'message' => 'Template deleted']);
     }
 
@@ -104,7 +106,7 @@ class OnboardingTemplateController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Task added successfully',
-            'data' => $task
+            'data' => $task,
         ], 201);
     }
 }

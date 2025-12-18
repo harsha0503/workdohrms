@@ -39,12 +39,12 @@ class OrganizationDocument extends Model
         $bytes = $this->file_size ?? 0;
         $units = ['B', 'KB', 'MB', 'GB'];
         $index = 0;
-        
+
         while ($bytes >= 1024 && $index < count($units) - 1) {
             $bytes /= 1024;
             $index++;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$index];
+
+        return round($bytes, 2).' '.$units[$index];
     }
 }

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Media Directories
-        if (!Schema::hasTable('media_directories')) {
+        if (! Schema::hasTable('media_directories')) {
             Schema::create('media_directories', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -21,7 +21,7 @@ return new class extends Migration
         }
 
         // Media Files
-        if (!Schema::hasTable('media_files')) {
+        if (! Schema::hasTable('media_files')) {
             Schema::create('media_files', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');

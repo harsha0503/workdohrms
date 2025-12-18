@@ -51,7 +51,7 @@ class DocumentTypeController extends Controller
     public function update(Request $request, DocumentType $documentType)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:document_types,title,' . $documentType->id,
+            'title' => 'sometimes|required|string|max:255|unique:document_types,title,'.$documentType->id,
             'notes' => 'nullable|string',
             'is_active' => 'boolean',
         ]);

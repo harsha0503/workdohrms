@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\StaffMember;
-use App\Models\WorkLog;
-use App\Models\TimeOffRequest;
-use App\Models\SalarySlip;
 use App\Models\CompanyEvent;
 use App\Models\CompanyNotice;
+use App\Models\SalarySlip;
+use App\Models\StaffMember;
+use App\Models\TimeOffRequest;
+use App\Models\WorkLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,19 +27,19 @@ class ReportController extends Controller
             'staff_member_id' => 'nullable|exists:staff_members,id',
         ]);
 
-        $period = Carbon::parse($validated['month'] . '-01');
+        $period = Carbon::parse($validated['month'].'-01');
         $startDate = $period->copy()->startOfMonth();
         $endDate = $period->copy()->endOfMonth();
 
         $query = StaffMember::active();
 
-        if (!empty($validated['office_location_id'])) {
+        if (! empty($validated['office_location_id'])) {
             $query->where('office_location_id', $validated['office_location_id']);
         }
-        if (!empty($validated['division_id'])) {
+        if (! empty($validated['division_id'])) {
             $query->where('division_id', $validated['division_id']);
         }
-        if (!empty($validated['staff_member_id'])) {
+        if (! empty($validated['staff_member_id'])) {
             $query->where('id', $validated['staff_member_id']);
         }
 
@@ -93,13 +93,13 @@ class ReportController extends Controller
         $query = TimeOffRequest::with(['staffMember', 'category'])
             ->whereYear('start_date', $validated['year']);
 
-        if (!empty($validated['month'])) {
+        if (! empty($validated['month'])) {
             $query->whereMonth('start_date', $validated['month']);
         }
-        if (!empty($validated['time_off_category_id'])) {
+        if (! empty($validated['time_off_category_id'])) {
             $query->where('time_off_category_id', $validated['time_off_category_id']);
         }
-        if (!empty($validated['staff_member_id'])) {
+        if (! empty($validated['staff_member_id'])) {
             $query->where('staff_member_id', $validated['staff_member_id']);
         }
 
@@ -118,6 +118,7 @@ class ReportController extends Controller
             ->groupBy('time_off_category_id')
             ->map(function ($items, $categoryId) {
                 $category = $items->first()->category;
+
                 return [
                     'category_id' => $categoryId,
                     'category_title' => $category?->title,
@@ -152,12 +153,12 @@ class ReportController extends Controller
         $query = SalarySlip::with(['staffMember.officeLocation', 'staffMember.division'])
             ->forPeriod($validated['salary_period']);
 
-        if (!empty($validated['office_location_id'])) {
+        if (! empty($validated['office_location_id'])) {
             $query->whereHas('staffMember', function ($q) use ($validated) {
                 $q->where('office_location_id', $validated['office_location_id']);
             });
         }
-        if (!empty($validated['division_id'])) {
+        if (! empty($validated['division_id'])) {
             $query->whereHas('staffMember', function ($q) use ($validated) {
                 $q->where('division_id', $validated['division_id']);
             });
@@ -180,6 +181,7 @@ class ReportController extends Controller
             return $slip->staffMember?->division_id;
         })->map(function ($items, $divisionId) {
             $division = $items->first()->staffMember?->division;
+
             return [
                 'division_id' => $divisionId,
                 'division_title' => $division?->title ?? 'Unassigned',

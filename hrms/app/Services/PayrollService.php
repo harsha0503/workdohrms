@@ -2,17 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\SalarySlip;
-use App\Models\StaffMember;
-use App\Models\StaffBenefit;
 use App\Models\RecurringDeduction;
+use App\Models\SalarySlip;
+use App\Models\StaffBenefit;
+use App\Models\StaffMember;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 /**
  * Payroll Service
- * 
+ *
  * Handles all business logic for payroll processing.
  */
 class PayrollService extends BaseService
@@ -40,9 +39,9 @@ class PayrollService extends BaseService
         $query = $this->applyFilters($query, $params);
 
         // Month/Year filter
-        if (!empty($params['month']) && !empty($params['year'])) {
+        if (! empty($params['month']) && ! empty($params['year'])) {
             $query->where('salary_month', $params['month'])
-                  ->where('salary_year', $params['year']);
+                ->where('salary_year', $params['year']);
         }
 
         $query = $this->applyOrdering($query, $params);
@@ -50,8 +49,8 @@ class PayrollService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -72,7 +71,7 @@ class PayrollService extends BaseService
             }
 
             $employee = StaffMember::with(['jobTitle'])->findOrFail($staffMemberId);
-            
+
             // Calculate components
             $baseSalary = $employee->base_salary ?? 0;
             $benefits = $this->calculateBenefits($staffMemberId, $month, $year);
@@ -103,7 +102,7 @@ class PayrollService extends BaseService
     {
         return DB::transaction(function () use ($month, $year, $employeeIds) {
             $query = StaffMember::active();
-            
+
             if ($employeeIds) {
                 $query->whereIn('id', $employeeIds);
             }

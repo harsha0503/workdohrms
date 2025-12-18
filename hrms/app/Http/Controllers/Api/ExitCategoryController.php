@@ -51,7 +51,7 @@ class ExitCategoryController extends Controller
     public function update(Request $request, ExitCategory $exitCategory)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:exit_categories,title,' . $exitCategory->id,
+            'title' => 'sometimes|required|string|max:255|unique:exit_categories,title,'.$exitCategory->id,
             'notes' => 'nullable|string',
             'is_active' => 'boolean',
         ]);

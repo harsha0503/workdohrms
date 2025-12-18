@@ -29,6 +29,7 @@ class ExtraHoursRecordController extends Controller
         // Add total_amount to each record
         $records->getCollection()->transform(function ($item) {
             $item->total_amount = $item->total_amount;
+
             return $item;
         });
 
@@ -55,7 +56,7 @@ class ExtraHoursRecordController extends Controller
             'success' => true,
             'message' => 'Extra hours record created',
             'data' => array_merge($record->load('staffMember')->toArray(), [
-                'total_amount' => $record->total_amount
+                'total_amount' => $record->total_amount,
             ]),
         ], 201);
     }
@@ -65,7 +66,7 @@ class ExtraHoursRecordController extends Controller
         return response()->json([
             'success' => true,
             'data' => array_merge($extraHoursRecord->load(['staffMember', 'author'])->toArray(), [
-                'total_amount' => $extraHoursRecord->total_amount
+                'total_amount' => $extraHoursRecord->total_amount,
             ]),
         ]);
     }
@@ -88,7 +89,7 @@ class ExtraHoursRecordController extends Controller
             'success' => true,
             'message' => 'Extra hours record updated',
             'data' => array_merge($extraHoursRecord->fresh('staffMember')->toArray(), [
-                'total_amount' => $extraHoursRecord->fresh()->total_amount
+                'total_amount' => $extraHoursRecord->fresh()->total_amount,
             ]),
         ]);
     }

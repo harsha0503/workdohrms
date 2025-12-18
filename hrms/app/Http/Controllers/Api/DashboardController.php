@@ -6,11 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * Dashboard Controller
- * 
+ *
  * Provides aggregated data for dashboard displays.
  */
 class DashboardController extends Controller
@@ -34,7 +33,7 @@ class DashboardController extends Controller
 
             return $this->success($data, 'Dashboard data retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve dashboard data: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve dashboard data: '.$e->getMessage());
         }
     }
 
@@ -48,7 +47,7 @@ class DashboardController extends Controller
 
             return $this->success($data, 'Employee statistics retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve employee statistics: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve employee statistics: '.$e->getMessage());
         }
     }
 
@@ -62,7 +61,7 @@ class DashboardController extends Controller
 
             return $this->success($data, 'Attendance summary retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve attendance summary: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve attendance summary: '.$e->getMessage());
         }
     }
 
@@ -76,7 +75,7 @@ class DashboardController extends Controller
 
             return $this->success($data, 'Employee growth trend retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve employee growth trend: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve employee growth trend: '.$e->getMessage());
         }
     }
 
@@ -90,7 +89,7 @@ class DashboardController extends Controller
 
             return $this->success($data, 'Department distribution retrieved successfully');
         } catch (\Exception $e) {
-            return $this->serverError('Failed to retrieve department distribution: ' . $e->getMessage());
+            return $this->serverError('Failed to retrieve department distribution: '.$e->getMessage());
         }
     }
 }

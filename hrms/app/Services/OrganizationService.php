@@ -2,15 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\OfficeLocation;
 use App\Models\Division;
 use App\Models\JobTitle;
+use App\Models\OfficeLocation;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Organization Service
- * 
+ *
  * Handles business logic for organizational structure:
  * - Office Locations (Branches)
  * - Divisions (Departments)
@@ -29,22 +28,22 @@ class OrganizationService
     {
         $query = OfficeLocation::with('divisions');
 
-        if (!empty($params['active_only'])) {
+        if (! empty($params['active_only'])) {
             $query->active();
         }
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query->where(function ($q) use ($params) {
                 $q->where('title', 'like', "%{$params['search']}%")
-                  ->orWhere('address', 'like', "%{$params['search']}%");
+                    ->orWhere('address', 'like', "%{$params['search']}%");
             });
         }
 
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? 15;
 
-        return $paginate 
-            ? $query->latest()->paginate($perPage) 
+        return $paginate
+            ? $query->latest()->paginate($perPage)
             : $query->latest()->get();
     }
 
@@ -64,6 +63,7 @@ class OrganizationService
         if ($authorId) {
             $data['author_id'] = $authorId;
         }
+
         return OfficeLocation::create($data);
     }
 
@@ -76,6 +76,7 @@ class OrganizationService
             $location = OfficeLocation::findOrFail($location);
         }
         $location->update($data);
+
         return $location->fresh();
     }
 
@@ -87,6 +88,7 @@ class OrganizationService
         if (is_int($location)) {
             $location = OfficeLocation::findOrFail($location);
         }
+
         return $location->delete();
     }
 
@@ -123,23 +125,23 @@ class OrganizationService
     {
         $query = Division::with('officeLocation');
 
-        if (!empty($params['office_location_id'])) {
+        if (! empty($params['office_location_id'])) {
             $query->forLocation($params['office_location_id']);
         }
 
-        if (!empty($params['active_only'])) {
+        if (! empty($params['active_only'])) {
             $query->active();
         }
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query->where('title', 'like', "%{$params['search']}%");
         }
 
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? 15;
 
-        return $paginate 
-            ? $query->latest()->paginate($perPage) 
+        return $paginate
+            ? $query->latest()->paginate($perPage)
             : $query->latest()->get();
     }
 
@@ -159,6 +161,7 @@ class OrganizationService
         if ($authorId) {
             $data['author_id'] = $authorId;
         }
+
         return Division::create($data);
     }
 
@@ -171,6 +174,7 @@ class OrganizationService
             $division = Division::findOrFail($division);
         }
         $division->update($data);
+
         return $division->fresh('officeLocation');
     }
 
@@ -182,6 +186,7 @@ class OrganizationService
         if (is_int($division)) {
             $division = Division::findOrFail($division);
         }
+
         return $division->delete();
     }
 
@@ -233,23 +238,23 @@ class OrganizationService
     {
         $query = JobTitle::with('division.officeLocation');
 
-        if (!empty($params['division_id'])) {
+        if (! empty($params['division_id'])) {
             $query->forDivision($params['division_id']);
         }
 
-        if (!empty($params['active_only'])) {
+        if (! empty($params['active_only'])) {
             $query->active();
         }
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query->where('title', 'like', "%{$params['search']}%");
         }
 
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? 15;
 
-        return $paginate 
-            ? $query->latest()->paginate($perPage) 
+        return $paginate
+            ? $query->latest()->paginate($perPage)
             : $query->latest()->get();
     }
 
@@ -269,6 +274,7 @@ class OrganizationService
         if ($authorId) {
             $data['author_id'] = $authorId;
         }
+
         return JobTitle::create($data);
     }
 
@@ -281,6 +287,7 @@ class OrganizationService
             $jobTitle = JobTitle::findOrFail($jobTitle);
         }
         $jobTitle->update($data);
+
         return $jobTitle->fresh('division');
     }
 
@@ -292,6 +299,7 @@ class OrganizationService
         if (is_int($jobTitle)) {
             $jobTitle = JobTitle::findOrFail($jobTitle);
         }
+
         return $jobTitle->delete();
     }
 
@@ -364,9 +372,9 @@ class OrganizationService
                     $q->active()->with([
                         'jobTitles' => function ($q) {
                             $q->active();
-                        }
+                        },
                     ]);
-                }
+                },
             ])
             ->get();
     }

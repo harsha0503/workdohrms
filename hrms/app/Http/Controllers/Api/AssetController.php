@@ -22,20 +22,20 @@ class AssetController extends Controller
             $query->where('status', $request->status);
         }
         if ($request->search) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('serial_number', 'like', "%{$request->search}%")
-                  ->orWhere('asset_code', 'like', "%{$request->search}%");
+                    ->orWhere('serial_number', 'like', "%{$request->search}%")
+                    ->orWhere('asset_code', 'like', "%{$request->search}%");
             });
         }
 
-        $assets = $request->paginate === 'false' 
-            ? $query->get() 
+        $assets = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $assets
+            'data' => $assets,
         ]);
     }
 
@@ -56,7 +56,7 @@ class AssetController extends Controller
         }
 
         $data = $request->all();
-        $data['asset_code'] = 'AST-' . strtoupper(Str::random(8));
+        $data['asset_code'] = 'AST-'.strtoupper(Str::random(8));
         $data['status'] = 'available';
         $data['current_value'] = $data['purchase_cost'] ?? 0;
 
@@ -65,16 +65,17 @@ class AssetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset created successfully',
-            'data' => $asset->load('assetType')
+            'data' => $asset->load('assetType'),
         ], 201);
     }
 
     public function show(Asset $asset)
     {
         $asset->load(['assetType', 'assignedEmployee', 'assignments.staffMember']);
+
         return response()->json([
             'success' => true,
-            'data' => $asset
+            'data' => $asset,
         ]);
     }
 
@@ -95,7 +96,7 @@ class AssetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset updated successfully',
-            'data' => $asset->load('assetType')
+            'data' => $asset->load('assetType'),
         ]);
     }
 
@@ -105,7 +106,7 @@ class AssetController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Asset deleted successfully'
+            'message' => 'Asset deleted successfully',
         ]);
     }
 
@@ -123,7 +124,7 @@ class AssetController extends Controller
         if ($asset->status === 'assigned') {
             return response()->json([
                 'success' => false,
-                'message' => 'Asset is already assigned'
+                'message' => 'Asset is already assigned',
             ], 400);
         }
 
@@ -146,7 +147,7 @@ class AssetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset assigned successfully',
-            'data' => $asset->load(['assetType', 'assignedEmployee'])
+            'data' => $asset->load(['assetType', 'assignedEmployee']),
         ]);
     }
 
@@ -155,7 +156,7 @@ class AssetController extends Controller
         if ($asset->status !== 'assigned') {
             return response()->json([
                 'success' => false,
-                'message' => 'Asset is not currently assigned'
+                'message' => 'Asset is not currently assigned',
             ], 400);
         }
 
@@ -178,7 +179,7 @@ class AssetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset returned successfully',
-            'data' => $asset->load('assetType')
+            'data' => $asset->load('assetType'),
         ]);
     }
 
@@ -189,7 +190,7 @@ class AssetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Asset marked for maintenance',
-            'data' => $asset
+            'data' => $asset,
         ]);
     }
 
@@ -199,7 +200,7 @@ class AssetController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $assets
+            'data' => $assets,
         ]);
     }
 
@@ -211,7 +212,7 @@ class AssetController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $assets
+            'data' => $assets,
         ]);
     }
 }

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\StaffMember;
-use App\Models\WorkLog;
 use App\Models\CompanyHoliday;
 use App\Models\DataImport;
+use App\Models\StaffMember;
+use App\Models\WorkLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 
 class DataImportController extends Controller
 {
@@ -57,7 +57,7 @@ class DataImportController extends Controller
             ],
         ];
 
-        if (!isset($templates[$type])) {
+        if (! isset($templates[$type])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unknown import type',
@@ -169,7 +169,7 @@ class DataImportController extends Controller
         $fullPath = Storage::disk('public')->path($path);
         $handle = fopen($fullPath, 'r');
         $headers = fgetcsv($handle);
-        
+
         $success = 0;
         $errors = 0;
         $errorDetails = [];
@@ -179,22 +179,22 @@ class DataImportController extends Controller
             $row++;
             try {
                 $mapped = array_combine($headers, $data);
-                
+
                 StaffMember::create([
                     'first_name' => $mapped['first_name'] ?? '',
                     'last_name' => $mapped['last_name'] ?? '',
                     'personal_email' => $mapped['personal_email'] ?? null,
                     'phone_number' => $mapped['phone_number'] ?? null,
-                    'date_of_birth' => !empty($mapped['date_of_birth']) ? Carbon::parse($mapped['date_of_birth']) : null,
+                    'date_of_birth' => ! empty($mapped['date_of_birth']) ? Carbon::parse($mapped['date_of_birth']) : null,
                     'gender' => $mapped['gender'] ?? null,
-                    'hire_date' => !empty($mapped['hire_date']) ? Carbon::parse($mapped['hire_date']) : now(),
+                    'hire_date' => ! empty($mapped['hire_date']) ? Carbon::parse($mapped['hire_date']) : now(),
                     'base_salary' => $mapped['base_salary'] ?? 0,
                     'employment_status' => 'active',
                 ]);
                 $success++;
             } catch (\Exception $e) {
                 $errors++;
-                $errorDetails[] = "Row {$row}: " . $e->getMessage();
+                $errorDetails[] = "Row {$row}: ".$e->getMessage();
             }
         }
 
@@ -221,7 +221,7 @@ class DataImportController extends Controller
         $fullPath = Storage::disk('public')->path($path);
         $handle = fopen($fullPath, 'r');
         $headers = fgetcsv($handle);
-        
+
         $success = 0;
         $errors = 0;
         $errorDetails = [];
@@ -231,9 +231,9 @@ class DataImportController extends Controller
             $row++;
             try {
                 $mapped = array_combine($headers, $data);
-                
+
                 $staff = StaffMember::where('staff_code', $mapped['staff_code'])->first();
-                if (!$staff) {
+                if (! $staff) {
                     throw new \Exception("Staff not found: {$mapped['staff_code']}");
                 }
 
@@ -251,7 +251,7 @@ class DataImportController extends Controller
                 $success++;
             } catch (\Exception $e) {
                 $errors++;
-                $errorDetails[] = "Row {$row}: " . $e->getMessage();
+                $errorDetails[] = "Row {$row}: ".$e->getMessage();
             }
         }
 
@@ -278,7 +278,7 @@ class DataImportController extends Controller
         $fullPath = Storage::disk('public')->path($path);
         $handle = fopen($fullPath, 'r');
         $headers = fgetcsv($handle);
-        
+
         $success = 0;
         $errors = 0;
         $errorDetails = [];
@@ -288,7 +288,7 @@ class DataImportController extends Controller
             $row++;
             try {
                 $mapped = array_combine($headers, $data);
-                
+
                 CompanyHoliday::updateOrCreate(
                     ['holiday_date' => $mapped['holiday_date']],
                     [
@@ -299,7 +299,7 @@ class DataImportController extends Controller
                 $success++;
             } catch (\Exception $e) {
                 $errors++;
-                $errorDetails[] = "Row {$row}: " . $e->getMessage();
+                $errorDetails[] = "Row {$row}: ".$e->getMessage();
             }
         }
 

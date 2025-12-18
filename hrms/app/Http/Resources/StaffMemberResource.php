@@ -22,13 +22,13 @@ class StaffMemberResource extends JsonResource
             'phone_number' => $this->phone_number,
             'date_of_birth' => $this->date_of_birth?->toDateString(),
             'gender' => $this->gender,
-            
+
             // Employment
             'employment_status' => $this->employment_status,
             'employment_type' => $this->employment_type,
             'hire_date' => $this->hire_date?->toDateString(),
             'base_salary' => (float) $this->base_salary,
-            
+
             // Relationships
             'office_location' => $this->whenLoaded('officeLocation', function () {
                 return [
@@ -55,7 +55,7 @@ class StaffMemberResource extends JsonResource
                     'is_active' => $this->user->is_active,
                 ];
             }),
-            
+
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

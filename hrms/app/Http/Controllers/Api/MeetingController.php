@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Meeting;
+use App\Models\MeetingActionItem;
 use App\Models\MeetingAttendee;
 use App\Models\MeetingMinutes;
-use App\Models\MeetingActionItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,6 +24,7 @@ class MeetingController extends Controller
         }
 
         $meetings = $query->orderBy('date')->orderBy('start_time')->paginate($request->per_page ?? 15);
+
         return response()->json(['success' => true, 'data' => $meetings]);
     }
 
@@ -73,25 +74,28 @@ class MeetingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Meeting created',
-            'data' => $meeting->load(['meetingType', 'meetingRoom', 'attendees.staffMember'])
+            'data' => $meeting->load(['meetingType', 'meetingRoom', 'attendees.staffMember']),
         ], 201);
     }
 
     public function show(Meeting $meeting)
     {
         $meeting->load(['meetingType', 'meetingRoom', 'attendees.staffMember', 'minutes', 'actionItems']);
+
         return response()->json(['success' => true, 'data' => $meeting]);
     }
 
     public function update(Request $request, Meeting $meeting)
     {
         $meeting->update($request->all());
+
         return response()->json(['success' => true, 'message' => 'Updated', 'data' => $meeting]);
     }
 
     public function destroy(Meeting $meeting)
     {
         $meeting->delete();
+
         return response()->json(['success' => true, 'message' => 'Deleted']);
     }
 
@@ -116,19 +120,21 @@ class MeetingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Attendees added',
-            'data' => $meeting->load('attendees.staffMember')
+            'data' => $meeting->load('attendees.staffMember'),
         ]);
     }
 
     public function start(Meeting $meeting)
     {
         $meeting->update(['status' => 'in_progress']);
+
         return response()->json(['success' => true, 'message' => 'Meeting started', 'data' => $meeting]);
     }
 
     public function complete(Meeting $meeting)
     {
         $meeting->update(['status' => 'completed']);
+
         return response()->json(['success' => true, 'message' => 'Meeting completed', 'data' => $meeting]);
     }
 
@@ -176,6 +182,7 @@ class MeetingController extends Controller
     public function completeActionItem(MeetingActionItem $meetingActionItem)
     {
         $meetingActionItem->update(['status' => 'completed']);
+
         return response()->json(['success' => true, 'message' => 'Action item completed', 'data' => $meetingActionItem]);
     }
 
@@ -193,7 +200,7 @@ class MeetingController extends Controller
     public function myMeetings()
     {
         $staffMember = auth()->user()->staffMember;
-        if (!$staffMember) {
+        if (! $staffMember) {
             return response()->json(['success' => true, 'data' => []]);
         }
 

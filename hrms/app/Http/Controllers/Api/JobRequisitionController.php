@@ -34,7 +34,7 @@ class JobRequisitionController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $requisitions
+            'data' => $requisitions,
         ]);
     }
 
@@ -67,16 +67,17 @@ class JobRequisitionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job requisition created successfully',
-            'data' => $requisition->load(['division', 'jobTitle'])
+            'data' => $requisition->load(['division', 'jobTitle']),
         ], 201);
     }
 
     public function show(JobRequisition $jobRequisition)
     {
         $jobRequisition->load(['division', 'jobTitle', 'requester', 'approver', 'jobPostings']);
+
         return response()->json([
             'success' => true,
-            'data' => $jobRequisition
+            'data' => $jobRequisition,
         ]);
     }
 
@@ -85,7 +86,7 @@ class JobRequisitionController extends Controller
         if ($jobRequisition->status !== 'draft' && $jobRequisition->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot update approved/rejected requisition'
+                'message' => 'Cannot update approved/rejected requisition',
             ], 400);
         }
 
@@ -112,7 +113,7 @@ class JobRequisitionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job requisition updated successfully',
-            'data' => $jobRequisition
+            'data' => $jobRequisition,
         ]);
     }
 
@@ -121,7 +122,7 @@ class JobRequisitionController extends Controller
         if ($jobRequisition->status === 'approved') {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete approved requisition'
+                'message' => 'Cannot delete approved requisition',
             ], 400);
         }
 
@@ -129,7 +130,7 @@ class JobRequisitionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Job requisition deleted successfully'
+            'message' => 'Job requisition deleted successfully',
         ]);
     }
 
@@ -138,7 +139,7 @@ class JobRequisitionController extends Controller
         if ($jobRequisition->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only pending requisitions can be approved'
+                'message' => 'Only pending requisitions can be approved',
             ], 400);
         }
 
@@ -151,7 +152,7 @@ class JobRequisitionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job requisition approved successfully',
-            'data' => $jobRequisition
+            'data' => $jobRequisition,
         ]);
     }
 
@@ -160,7 +161,7 @@ class JobRequisitionController extends Controller
         if ($jobRequisition->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only pending requisitions can be rejected'
+                'message' => 'Only pending requisitions can be rejected',
             ], 400);
         }
 
@@ -182,7 +183,7 @@ class JobRequisitionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job requisition rejected',
-            'data' => $jobRequisition
+            'data' => $jobRequisition,
         ]);
     }
 
@@ -196,7 +197,7 @@ class JobRequisitionController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $pending
+            'data' => $pending,
         ]);
     }
 }

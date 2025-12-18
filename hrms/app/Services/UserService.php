@@ -6,12 +6,12 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 /**
  * User Service
- * 
+ *
  * Handles all business logic for user management including roles and permissions.
  */
 class UserService extends BaseService
@@ -41,11 +41,11 @@ class UserService extends BaseService
 
         $query = $this->applyFilters($query, $params);
 
-        if (!empty($params['search'])) {
+        if (! empty($params['search'])) {
             $query = $this->applySearch($query, $params['search']);
         }
 
-        if (!empty($params['role'])) {
+        if (! empty($params['role'])) {
             $query->role($params['role']);
         }
 
@@ -54,8 +54,8 @@ class UserService extends BaseService
         $paginate = $params['paginate'] ?? true;
         $perPage = $params['per_page'] ?? $this->perPage;
 
-        return $paginate 
-            ? $query->paginate($perPage) 
+        return $paginate
+            ? $query->paginate($perPage)
             : $query->get();
     }
 
@@ -72,11 +72,11 @@ class UserService extends BaseService
                 'is_active' => $data['is_active'] ?? true,
             ]);
 
-            if (!empty($data['role'])) {
+            if (! empty($data['role'])) {
                 $user->assignRole($data['role']);
             }
 
-            if (!empty($data['permissions'])) {
+            if (! empty($data['permissions'])) {
                 $user->givePermissionTo($data['permissions']);
             }
 
@@ -122,6 +122,7 @@ class UserService extends BaseService
         }
 
         $user->update(['is_active' => false]);
+
         return $user->fresh();
     }
 
@@ -135,6 +136,7 @@ class UserService extends BaseService
         }
 
         $user->update(['is_active' => true]);
+
         return $user->fresh();
     }
 
@@ -160,7 +162,7 @@ class UserService extends BaseService
             'guard_name' => 'web',
         ]);
 
-        if (!empty($data['permissions'])) {
+        if (! empty($data['permissions'])) {
             $role->givePermissionTo($data['permissions']);
         }
 

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Job Categories
-        if (!Schema::hasTable('job_categories')) {
+        if (! Schema::hasTable('job_categories')) {
             Schema::create('job_categories', function (Blueprint $table) {
                 $table->id();
                 $table->string('title');
@@ -19,7 +19,7 @@ return new class extends Migration
         }
 
         // Job Stages (Kanban)
-        if (!Schema::hasTable('job_stages')) {
+        if (! Schema::hasTable('job_stages')) {
             Schema::create('job_stages', function (Blueprint $table) {
                 $table->id();
                 $table->string('title');
@@ -31,7 +31,7 @@ return new class extends Migration
         }
 
         // Job Postings
-        if (!Schema::hasTable('job_postings')) {
+        if (! Schema::hasTable('job_postings')) {
             Schema::create('job_postings', function (Blueprint $table) {
                 $table->id();
                 $table->string('title');
@@ -53,7 +53,7 @@ return new class extends Migration
         }
 
         // Custom Questions
-        if (!Schema::hasTable('custom_questions')) {
+        if (! Schema::hasTable('custom_questions')) {
             Schema::create('custom_questions', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('job_posting_id')->constrained()->onDelete('cascade');
@@ -65,7 +65,7 @@ return new class extends Migration
         }
 
         // Candidates
-        if (!Schema::hasTable('candidates')) {
+        if (! Schema::hasTable('candidates')) {
             Schema::create('candidates', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -85,7 +85,7 @@ return new class extends Migration
         }
 
         // Job Applications
-        if (!Schema::hasTable('job_applications')) {
+        if (! Schema::hasTable('job_applications')) {
             Schema::create('job_applications', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('job_posting_id')->constrained()->onDelete('cascade');
@@ -103,7 +103,7 @@ return new class extends Migration
         }
 
         // Application Notes
-        if (!Schema::hasTable('application_notes')) {
+        if (! Schema::hasTable('application_notes')) {
             Schema::create('application_notes', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('job_application_id')->constrained()->onDelete('cascade');
@@ -114,7 +114,7 @@ return new class extends Migration
         }
 
         // Interview Schedules
-        if (!Schema::hasTable('interview_schedules')) {
+        if (! Schema::hasTable('interview_schedules')) {
             Schema::create('interview_schedules', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('job_application_id')->constrained()->onDelete('cascade');

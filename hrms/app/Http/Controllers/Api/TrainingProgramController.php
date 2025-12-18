@@ -23,13 +23,13 @@ class TrainingProgramController extends Controller
             $query->where('title', 'like', "%{$request->search}%");
         }
 
-        $programs = $request->paginate === 'false' 
-            ? $query->get() 
+        $programs = $request->paginate === 'false'
+            ? $query->get()
             : $query->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
-            'data' => $programs
+            'data' => $programs,
         ]);
     }
 
@@ -54,16 +54,17 @@ class TrainingProgramController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training program created successfully',
-            'data' => $program->load('trainingType')
+            'data' => $program->load('trainingType'),
         ], 201);
     }
 
     public function show(TrainingProgram $trainingProgram)
     {
         $trainingProgram->load(['trainingType', 'sessions.participants']);
+
         return response()->json([
             'success' => true,
-            'data' => $trainingProgram
+            'data' => $trainingProgram,
         ]);
     }
 
@@ -84,7 +85,7 @@ class TrainingProgramController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Training program updated successfully',
-            'data' => $trainingProgram->load('trainingType')
+            'data' => $trainingProgram->load('trainingType'),
         ]);
     }
 
@@ -94,7 +95,7 @@ class TrainingProgramController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Training program deleted successfully'
+            'message' => 'Training program deleted successfully',
         ]);
     }
 }

@@ -22,7 +22,7 @@ class TimeOffRequestResource extends JsonResource
             'approval_status' => $this->approval_status,
             'approval_remarks' => $this->approval_remarks,
             'approved_at' => $this->approved_at?->toIso8601String(),
-            
+
             'staff_member' => $this->whenLoaded('staffMember', function () {
                 return [
                     'id' => $this->staffMember->id,
@@ -43,7 +43,7 @@ class TimeOffRequestResource extends JsonResource
                     'name' => $this->approvedByUser->name,
                 ];
             }),
-            
+
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
