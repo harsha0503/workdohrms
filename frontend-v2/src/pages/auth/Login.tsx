@@ -7,6 +7,12 @@ import { Label } from '../../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { Loader2, AlertCircle, Shield, Users, Briefcase, User } from 'lucide-react';
+import { toast } from '../../hooks/use-toast';
+
+interface FieldErrors {
+  email?: string;
+  password?: string;
+}
 
 const DEMO_ACCOUNTS = [
   {
@@ -53,20 +59,71 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState<string | null>(null);
+
+  const validateForm = (): boolean => {
+    const errors: FieldErrors = {};
+    
+    if (!email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please fix the errors in the form',
+      });
+      return false;
+    }
+    
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
       await login(email, password);
       navigate('/dashboard');
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || 'Invalid credentials. Please try again.');
+      const error = err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
+      const errorMessage = error.response?.data?.message || 'Invalid credentials. Please try again.';
+      
+      if (error.response?.data?.errors) {
+        const apiErrors: FieldErrors = {};
+        const errors = error.response.data.errors;
+        if (errors.email) apiErrors.email = errors.email[0];
+        if (errors.password) apiErrors.password = errors.password[0];
+        setFieldErrors(apiErrors);
+      }
+      
+      setError(errorMessage);
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -104,20 +161,26 @@ export default function Login() {
             </Alert>
           )}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className={fieldErrors.email ? 'text-red-500' : ''}>Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="admin@hrms.local"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
+              }}
+              aria-invalid={!!fieldErrors.email}
               className="h-11"
             />
+            {fieldErrors.email && (
+              <p className="text-sm text-red-500">{fieldErrors.email}</p>
+            )}
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className={fieldErrors.password ? 'text-red-500' : ''}>Password</Label>
               <Link
                 to="/forgot-password"
                 className="text-sm text-solarized-blue hover:underline"
@@ -130,10 +193,16 @@ export default function Login() {
               type="password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
+              }}
+              aria-invalid={!!fieldErrors.password}
               className="h-11"
             />
+            {fieldErrors.password && (
+              <p className="text-sm text-red-500">{fieldErrors.password}</p>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
