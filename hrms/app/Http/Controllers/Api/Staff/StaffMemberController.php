@@ -13,7 +13,7 @@ use Illuminate\Validation\ValidationException;
  * Staff Member Controller
  *
  * Handles HTTP requests for staff member management.
- * All business logic is delegated to StaffMemberService.
+ * All business logic is delegated to StaffMemberService...
  */
 class StaffMemberController extends Controller
 {
