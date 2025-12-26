@@ -50,12 +50,27 @@ export default function LeaveApply() {
     const fetchCategories = async () => {
       try {
         const response = await leaveService.getCategories();
+        console.log('Leave categories response:', response.data);
+        
         // Handle both paginated and non-paginated responses
         const data = response.data.data;
-        const categoriesArray = Array.isArray(data) ? data : (data?.data || []);
+        let categoriesArray = [];
+        
+        if (Array.isArray(data)) {
+          categoriesArray = data;
+        } else if (data && Array.isArray(data.data)) {
+          categoriesArray = data.data;
+        } else if (data && typeof data === 'object') {
+          // If it's an object but not an array, try to extract an array
+          categoriesArray = Object.values(data).filter(item => 
+            item && typeof item === 'object' && 'id' in item
+          );
+        }
+        
         setCategories(categoriesArray);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
+        setCategories([]); // Ensure it's always an array even on error
       }
     };
     fetchCategories();
@@ -199,7 +214,7 @@ export default function LeaveApply() {
                       <SelectValue placeholder="Select leave type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((cat) => (
+                      {(categories || []).map((cat) => (
                         <SelectItem key={cat.id} value={cat.id.toString()}>
                           {cat.name} ({cat.is_paid ? 'Paid' : 'Unpaid'})
                         </SelectItem>

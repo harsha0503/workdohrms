@@ -63,7 +63,28 @@ export default function LeaveCategories() {
     setIsLoading(true);
     try {
       const response = await leaveService.getCategories();
-      setCategories(response.data.data || []);
+      console.log('Leave categories response:', response.data);
+      
+      const data = response.data.data;
+      let categoriesArray: any[] = [];
+      
+      if (Array.isArray(data)) {
+        categoriesArray = data;
+      } else if (data && Array.isArray(data.data)) {
+        categoriesArray = data.data;
+      } else if (data && typeof data === 'object') {
+        categoriesArray = Object.values(data).filter(item => 
+          item && typeof item === 'object' && 'id' in item
+        );
+      }
+      
+      // Map API fields if necessary (API uses 'title', frontend expects 'name')
+      const mappedCategories = categoriesArray.map(cat => ({
+        ...cat,
+        name: cat.name || cat.title || 'Unnamed Category'
+      }));
+      
+      setCategories(mappedCategories);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     } finally {
@@ -74,10 +95,16 @@ export default function LeaveCategories() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Map frontend 'name' to backend 'title'
+      const payload = {
+        ...formData,
+        title: formData.name
+      };
+      
       if (editingCategory) {
-        await leaveService.updateCategory(editingCategory.id, formData);
+        await leaveService.updateCategory(editingCategory.id, payload);
       } else {
-        await leaveService.createCategory(formData);
+        await leaveService.createCategory(payload);
       }
       setIsDialogOpen(false);
       setEditingCategory(null);
