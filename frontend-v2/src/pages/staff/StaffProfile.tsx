@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { staffService } from '../../services/api';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
@@ -17,30 +23,37 @@ import {
   Building,
 } from 'lucide-react';
 
+/* =========================
+   ✅ CORRECTED INTERFACE
+========================= */
 interface StaffMember {
   id: number;
   full_name: string;
-  personal_email: string;
-  work_email: string;
-  phone_number: string;
-  date_of_birth: string;
-  gender: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  job_title: { name: string } | null;
-  division: { name: string } | null;
-  office_location: { name: string } | null;
+  personal_email?: string;
+  work_email?: string;
+  mobile_number?: string;
+  birth_date?: string;
+  gender?: string;
+
+  home_address?: string;
+  city_name?: string;
+  region?: string;
+  country_code?: string;
+  postal_code?: string;
+
+  job_title?: { title: string } | null;
+  division?: { title: string } | null;
+  office_location?: { title: string } | null;
+
   employment_status: string;
-  employment_type: string;
-  hire_date: string;
-  base_salary: number;
-  compensation_type: string;
-  emergency_contact_name: string;
-  emergency_contact_phone: string;
-  emergency_contact_relationship: string;
+  employment_type?: string;
+  hire_date?: string;
+  base_salary?: number;
+  compensation_type?: string;
+
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
 }
 
 export default function StaffProfile() {
@@ -73,25 +86,18 @@ export default function StaffProfile() {
     return variants[status] || variants.inactive;
   };
 
-  const getInitials = (name: string) => {
-    return name
+  const getInitials = (name: string) =>
+    name
       .split(' ')
       .map((n) => n[0])
       .join('')
       .toUpperCase()
       .slice(0, 2);
-  };
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-32" />
-          </div>
-        </div>
+        <Skeleton className="h-16 w-64" />
         <Skeleton className="h-64 w-full" />
       </div>
     );
@@ -110,23 +116,29 @@ export default function StaffProfile() {
 
   return (
     <div className="space-y-6">
+      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
+
           <Avatar className="h-16 w-16">
             <AvatarFallback className="bg-solarized-blue text-white text-xl">
               {getInitials(staff.full_name)}
             </AvatarFallback>
           </Avatar>
+
           <div>
-            <h1 className="text-2xl font-bold text-solarized-base02">{staff.full_name}</h1>
-            <p className="text-solarized-base01">{staff.job_title?.name || 'No job title'}</p>
+            <h1 className="text-2xl font-bold">{staff.full_name}</h1>
+            <p className="text-solarized-base01">
+              {staff.job_title?.title || 'No job title'}
+            </p>
           </div>
         </div>
+
         <Link to={`/staff/${id}/edit`}>
-          <Button className="bg-solarized-blue hover:bg-solarized-blue/90">
+          <Button>
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </Button>
@@ -134,182 +146,133 @@ export default function StaffProfile() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="border-0 shadow-md">
+        {/* QUICK INFO */}
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Quick Info</CardTitle>
+            <CardTitle>Quick Info</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-solarized-blue/10 flex items-center justify-center">
-                <Mail className="h-5 w-5 text-solarized-blue" />
-              </div>
-              <div>
-                <p className="text-sm text-solarized-base01">Email</p>
-                <p className="font-medium">{staff.work_email || staff.personal_email}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-solarized-green/10 flex items-center justify-center">
-                <Phone className="h-5 w-5 text-solarized-green" />
-              </div>
-              <div>
-                <p className="text-sm text-solarized-base01">Phone</p>
-                <p className="font-medium">{staff.phone_number || 'Not provided'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-solarized-yellow/10 flex items-center justify-center">
-                <Building className="h-5 w-5 text-solarized-yellow" />
-              </div>
-              <div>
-                <p className="text-sm text-solarized-base01">Department</p>
-                <p className="font-medium">{staff.division?.name || 'Not assigned'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-solarized-cyan/10 flex items-center justify-center">
-                <MapPin className="h-5 w-5 text-solarized-cyan" />
-              </div>
-              <div>
-                <p className="text-sm text-solarized-base01">Location</p>
-                <p className="font-medium">{staff.office_location?.name || 'Not assigned'}</p>
-              </div>
-            </div>
-            <div className="pt-4 border-t">
-              <Badge className={getStatusBadge(staff.employment_status)}>
-                {staff.employment_status?.replace('_', ' ') || 'Unknown'}
-              </Badge>
-            </div>
+            <InfoRow icon={Mail} label="Email" value={staff.work_email || staff.personal_email || 'Not provided'} />
+            <InfoRow icon={Phone} label="Phone" value={staff.mobile_number || 'Not provided'} />
+            <InfoRow icon={Building} label="Department" value={staff.division?.title || 'Not assigned'} />
+            <InfoRow icon={MapPin} label="Location" value={staff.office_location?.title || 'Not assigned'} />
+
+            <Badge className={getStatusBadge(staff.employment_status)}>
+              {staff.employment_status.replace('_', ' ')}
+            </Badge>
           </CardContent>
         </Card>
 
+        {/* TABS */}
         <div className="lg:col-span-2">
-          <Tabs defaultValue="personal" className="w-full">
-            <TabsList className="w-full justify-start">
+          <Tabs defaultValue="personal">
+            <TabsList>
               <TabsTrigger value="personal">Personal</TabsTrigger>
               <TabsTrigger value="employment">Employment</TabsTrigger>
               <TabsTrigger value="emergency">Emergency</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="personal" className="mt-4">
-              <Card className="border-0 shadow-md">
+            {/* PERSONAL */}
+            <TabsContent value="personal">
+              <Card>
                 <CardHeader>
                   <CardTitle>Personal Information</CardTitle>
                 </CardHeader>
                 <CardContent className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <p className="text-sm text-solarized-base01">Full Name</p>
-                    <p className="font-medium">{staff.full_name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Personal Email</p>
-                    <p className="font-medium">{staff.personal_email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Date of Birth</p>
-                    <p className="font-medium">{staff.date_of_birth || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Gender</p>
-                    <p className="font-medium capitalize">{staff.gender || 'Not provided'}</p>
-                  </div>
+                  <Field label="Personal Email" value={staff.personal_email} />
+                  <Field label="Date of Birth" value={staff.birth_date} />
+                  <Field label="Gender" value={staff.gender} />
                   <div className="sm:col-span-2">
-                    <p className="text-sm text-solarized-base01">Address</p>
-                    <p className="font-medium">
-                      {[staff.address, staff.city, staff.state, staff.country, staff.postal_code]
+                    <Field
+                      label="Address"
+                      value={[
+                        staff.home_address,
+                        staff.city_name,
+                        staff.region,
+                        staff.country_code,
+                        staff.postal_code,
+                      ]
                         .filter(Boolean)
                         .join(', ') || 'Not provided'}
-                    </p>
+                    />
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="employment" className="mt-4">
-              <Card className="border-0 shadow-md">
+            {/* EMPLOYMENT */}
+            <TabsContent value="employment">
+              <Card>
                 <CardHeader>
                   <CardTitle>Employment Details</CardTitle>
                 </CardHeader>
                 <CardContent className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <p className="text-sm text-solarized-base01">Job Title</p>
-                    <p className="font-medium">{staff.job_title?.name || 'Not assigned'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Division</p>
-                    <p className="font-medium">{staff.division?.name || 'Not assigned'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Office Location</p>
-                    <p className="font-medium">{staff.office_location?.name || 'Not assigned'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Hire Date</p>
-                    <p className="font-medium">{staff.hire_date || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Employment Type</p>
-                    <p className="font-medium capitalize">
-                      {staff.employment_type?.replace('_', ' ') || 'Not provided'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Compensation Type</p>
-                    <p className="font-medium capitalize">{staff.compensation_type || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Base Salary</p>
-                    <p className="font-medium">
-                      {staff.base_salary ? `$${staff.base_salary.toLocaleString()}` : 'Not provided'}
-                    </p>
-                  </div>
+                  <Field label="Job Title" value={staff.job_title?.title} />
+                  <Field label="Division" value={staff.division?.title} />
+                  <Field label="Office Location" value={staff.office_location?.title} />
+                  <Field label="Hire Date" value={staff.hire_date} />
+                  <Field label="Employment Type" value={staff.employment_type?.replace('_', ' ')} />
+                  <Field label="Compensation Type" value={staff.compensation_type} />
+                  <Field label="Base Salary" value={staff.base_salary ? `₹${staff.base_salary}` : 'Not provided'} />
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="emergency" className="mt-4">
-              <Card className="border-0 shadow-md">
+            {/* EMERGENCY */}
+            <TabsContent value="emergency">
+              <Card>
                 <CardHeader>
                   <CardTitle>Emergency Contact</CardTitle>
                 </CardHeader>
                 <CardContent className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <p className="text-sm text-solarized-base01">Contact Name</p>
-                    <p className="font-medium">{staff.emergency_contact_name || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Contact Phone</p>
-                    <p className="font-medium">{staff.emergency_contact_phone || 'Not provided'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-solarized-base01">Relationship</p>
-                    <p className="font-medium">{staff.emergency_contact_relationship || 'Not provided'}</p>
-                  </div>
+                  <Field label="Name" value={staff.emergency_contact_name} />
+                  <Field label="Phone" value={staff.emergency_contact_phone} />
+                  <Field label="Relationship" value={staff.emergency_contact_relationship} />
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="documents" className="mt-4">
-              <Card className="border-0 shadow-md">
+            {/* DOCUMENTS */}
+            <TabsContent value="documents">
+              <Card>
                 <CardHeader>
                   <CardTitle>Documents</CardTitle>
-                  <CardDescription>Employee documents and files</CardDescription>
+                  <CardDescription>No documents uploaded</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8 text-solarized-base01">
-                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No documents uploaded yet</p>
-                    <Button variant="outline" className="mt-4">
-                      Upload Document
-                    </Button>
-                  </div>
+                <CardContent className="text-center py-8">
+                  <FileText className="mx-auto h-12 w-12 opacity-50" />
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* =========================
+   REUSABLE COMPONENTS
+========================= */
+
+function InfoRow({ icon: Icon, label, value }: any) {
+  return (
+    <div className="flex items-center gap-3">
+      <Icon className="h-5 w-5 text-solarized-blue" />
+      <div>
+        <p className="text-sm text-solarized-base01">{label}</p>
+        <p className="font-medium">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, value }: any) {
+  return (
+    <div>
+      <p className="text-sm text-solarized-base01">{label}</p>
+      <p className="font-medium">{value || 'Not provided'}</p>
     </div>
   );
 }

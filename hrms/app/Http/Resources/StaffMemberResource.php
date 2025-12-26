@@ -14,19 +14,29 @@ class StaffMemberResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'staff_code' => $this->staff_code,
             'full_name' => $this->full_name,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
             'personal_email' => $this->personal_email,
-            'phone_number' => $this->phone_number,
-            'date_of_birth' => $this->date_of_birth?->toDateString(),
+            'mobile_number' => $this->mobile_number,
+            'birth_date' => $this->birth_date?->toDateString(),
             'gender' => $this->gender,
+            'home_address' => $this->home_address,
+            'nationality' => $this->nationality,
+            'passport_number' => $this->passport_number,
+            'country_code' => $this->country_code,
+            'region' => $this->region,
+            'city_name' => $this->city_name,
+            'postal_code' => $this->postal_code,
 
             // Employment
-            'employment_status' => $this->employment_status,
-            'employment_type' => $this->employment_type,
+            'biometric_id' => $this->biometric_id,
+            'office_location_id' => $this->office_location_id,
+            'division_id' => $this->division_id,
+            'job_title_id' => $this->job_title_id,
             'hire_date' => $this->hire_date?->toDateString(),
+            'employment_status' => $this->employment_status,
+            'compensation_type' => $this->compensation_type,
             'base_salary' => (float) $this->base_salary,
 
             // Relationships

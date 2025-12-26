@@ -34,16 +34,19 @@ export default function StaffEdit() {
 
   const [formData, setFormData] = useState({
     full_name: '',
+    email: '',
     personal_email: '',
-    work_email: '',
-    phone_number: '',
-    date_of_birth: '',
+    mobile_number: '',
+    birth_date: '',
     gender: '',
-    address: '',
-    city: '',
-    state: '',
-    country: '',
+    home_address: '',
+    nationality: '',
+    passport_number: '',
+    country_code: '',
+    region: '',
+    city_name: '',
     postal_code: '',
+    biometric_id: '',
     office_location_id: '',
     division_id: '',
     job_title_id: '',
@@ -66,20 +69,23 @@ export default function StaffEdit() {
           settingsService.getDivisions(),
           settingsService.getJobTitles(),
         ]);
-        
+
         const staff = staffRes.data.data;
         setFormData({
           full_name: staff.full_name || '',
+          email: staff.user?.email || '',
           personal_email: staff.personal_email || '',
-          work_email: staff.work_email || '',
-          phone_number: staff.phone_number || '',
-          date_of_birth: staff.date_of_birth || '',
+          mobile_number: staff.mobile_number || '',
+          birth_date: staff.birth_date || '',
           gender: staff.gender || '',
-          address: staff.address || '',
-          city: staff.city || '',
-          state: staff.state || '',
-          country: staff.country || '',
+          home_address: staff.home_address || '',
+          nationality: staff.nationality || '',
+          passport_number: staff.passport_number || '',
+          country_code: staff.country_code || '',
+          region: staff.region || '',
+          city_name: staff.city_name || '',
           postal_code: staff.postal_code || '',
+          biometric_id: staff.biometric_id || '',
           office_location_id: staff.office_location_id?.toString() || '',
           division_id: staff.division_id?.toString() || '',
           job_title_id: staff.job_title_id?.toString() || '',
@@ -92,7 +98,7 @@ export default function StaffEdit() {
           emergency_contact_phone: staff.emergency_contact_phone || '',
           emergency_contact_relationship: staff.emergency_contact_relationship || '',
         });
-        
+
         setLocations(locRes.data.data || []);
         setDivisions(divRes.data.data || []);
         setJobTitles(jobRes.data.data || []);
@@ -188,31 +194,32 @@ export default function StaffEdit() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="work_email">Work Email</Label>
+                <Label htmlFor="email">Work Email (Login)</Label>
                 <Input
-                  id="work_email"
-                  name="work_email"
+                  id="email"
+                  name="email"
                   type="email"
-                  value={formData.work_email}
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="mobile_number">Mobile Number</Label>
+                <Input
+                  id="mobile_number"
+                  name="mobile_number"
+                  value={formData.mobile_number}
                   onChange={handleChange}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone_number">Phone Number</Label>
+                <Label htmlFor="birth_date">Date of Birth</Label>
                 <Input
-                  id="phone_number"
-                  name="phone_number"
-                  value={formData.phone_number}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_of_birth">Date of Birth</Label>
-                <Input
-                  id="date_of_birth"
-                  name="date_of_birth"
+                  id="birth_date"
+                  name="birth_date"
                   type="date"
-                  value={formData.date_of_birth}
+                  value={formData.birth_date}
                   onChange={handleChange}
                 />
               </div>
@@ -241,30 +248,38 @@ export default function StaffEdit() {
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="address">Street Address</Label>
+                <Label htmlFor="home_address">Home Address</Label>
                 <Textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
+                  id="home_address"
+                  name="home_address"
+                  value={formData.home_address}
                   onChange={handleChange}
                   rows={2}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
-                <Input id="city" name="city" value={formData.city} onChange={handleChange} />
+                <Label htmlFor="city_name">City</Label>
+                <Input id="city_name" name="city_name" value={formData.city_name} onChange={handleChange} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="state">State</Label>
-                <Input id="state" name="state" value={formData.state} onChange={handleChange} />
+                <Label htmlFor="region">Region/State</Label>
+                <Input id="region" name="region" value={formData.region} onChange={handleChange} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="country">Country</Label>
-                <Input id="country" name="country" value={formData.country} onChange={handleChange} />
+                <Label htmlFor="country_code">Country Code</Label>
+                <Input id="country_code" name="country_code" value={formData.country_code} onChange={handleChange} maxLength={3} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="postal_code">Postal Code</Label>
                 <Input id="postal_code" name="postal_code" value={formData.postal_code} onChange={handleChange} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nationality">Nationality</Label>
+                <Input id="nationality" name="nationality" value={formData.nationality} onChange={handleChange} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="passport_number">Passport Number</Label>
+                <Input id="passport_number" name="passport_number" value={formData.passport_number} onChange={handleChange} />
               </div>
             </CardContent>
           </Card>
@@ -283,11 +298,11 @@ export default function StaffEdit() {
                   <SelectTrigger>
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
-                                    <SelectContent>
-                                      {locations.map((loc) => (
-                                        <SelectItem key={loc.id} value={loc.id.toString()}>{loc.title}</SelectItem>
-                                      ))}
-                                    </SelectContent>
+                  <SelectContent>
+                    {locations.map((loc) => (
+                      <SelectItem key={loc.id} value={loc.id.toString()}>{loc.title}</SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -299,11 +314,11 @@ export default function StaffEdit() {
                   <SelectTrigger>
                     <SelectValue placeholder="Select division" />
                   </SelectTrigger>
-                                    <SelectContent>
-                                      {divisions.map((div) => (
-                                        <SelectItem key={div.id} value={div.id.toString()}>{div.title}</SelectItem>
-                                      ))}
-                                    </SelectContent>
+                  <SelectContent>
+                    {divisions.map((div) => (
+                      <SelectItem key={div.id} value={div.id.toString()}>{div.title}</SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -315,11 +330,11 @@ export default function StaffEdit() {
                   <SelectTrigger>
                     <SelectValue placeholder="Select job title" />
                   </SelectTrigger>
-                                    <SelectContent>
-                                      {jobTitles.map((job) => (
-                                        <SelectItem key={job.id} value={job.id.toString()}>{job.title}</SelectItem>
-                                      ))}
-                                    </SelectContent>
+                  <SelectContent>
+                    {jobTitles.map((job) => (
+                      <SelectItem key={job.id} value={job.id.toString()}>{job.title}</SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">

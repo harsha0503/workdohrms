@@ -39,9 +39,9 @@ interface StaffMember {
   personal_email: string;
   work_email: string;
   phone_number: string;
-  job_title: { name: string } | null;
-  division: { name: string } | null;
-  office_location: { name: string } | null;
+  job_title: { title: string } | null;
+  division: { title: string } | null;
+  office_location: { title: string } | null;
   employment_status: string;
   hire_date: string;
 }
@@ -192,9 +192,10 @@ export default function StaffList() {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>{member.job_title?.name || '-'}</TableCell>
-                        <TableCell>{member.division?.name || '-'}</TableCell>
-                        <TableCell>{member.office_location?.name || '-'}</TableCell>
+                        <TableCell>{member.job_title?.title || '-'}</TableCell>
+                        <TableCell>{member.division?.title || '-'}</TableCell>
+                        <TableCell>{member.office_location?.title || '-'}</TableCell>
+
                         <TableCell>
                           <Badge className={getStatusBadge(member.employment_status)}>
                             {member.employment_status?.replace('_', ' ') || 'Unknown'}
