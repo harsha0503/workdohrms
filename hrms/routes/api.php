@@ -520,10 +520,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-regularization-requests', [AttendanceRegularizationController::class, 'myRequests']);
 
     // ============================================
-    // DYNAMIC STORAGE DOCUMENTS
+    // DYNAMIC STORAGE DOCUMENTS & CRUD
     // ============================================
-    Route::post('/documents/upload', [DocumentController::class, 'upload']);
-    Route::get('/documents/{id}/url', [DocumentController::class, 'getUrl']);
+    // 1. Specialized Upload Routes
+    Route::post('/documents/upload-local', [DocumentController::class, 'uploadLocal']);
+    Route::post('/documents/upload-wasabi', [DocumentController::class, 'uploadWasabi']);
+    Route::post('/documents/upload-aws', [DocumentController::class, 'uploadAws']);
+    
+    // 2. Standard CRUD
+    Route::get('/documents', [DocumentController::class, 'index']);      // List
+    Route::get('/documents/{id}', [DocumentController::class, 'show']);  // Show (includes URL)
+    Route::put('/documents/{id}', [DocumentController::class, 'update']); // Update Metadata
+    Route::delete('/documents/{id}', [DocumentController::class, 'destroy']); // Delete File & Record
 
     // ============================================
     // ORGANIZATIONS & COMPANIES

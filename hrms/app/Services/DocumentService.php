@@ -4,62 +4,47 @@ namespace App\Services;
 
 use App\Models\Document;
 use App\Models\DocumentLocation;
-use App\Models\DocumentType;
-use App\Enums\DocumentOwnerType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
-use Exception;
 use Illuminate\Support\Str;
+use Exception;
 
 class DocumentService
 {
     /**
-     * Upload a document to the configured storage location.
+     * Store document primarily based on explicit location type
      */
-    public function uploadDocument(UploadedFile $file, array $data): Document
+    public function storeDocument(UploadedFile $file, array $data, string $storageType = 'local'): Document
     {
-        // 1. Determine Location (Default to Local if not specified or active)
-        $locationSlug = $data['location'] ?? 'local';
-        $location = DocumentLocation::where('slug', $locationSlug)->where('is_active', true)->first();
-
-        if (!$location) {
-            // Fallback to local if requested location isn't active
-            $location = DocumentLocation::where('slug', 'local')->firstOrFail();
-        }
-
-        // 2. Prepare Storage Disk Dynamically
+        // 1. Get Location Entity
+        $location = DocumentLocation::where('slug', $storageType)->firstOrFail();
+        
+        // 2. Configure Dynamic Disk
         $diskName = $this->configureDisk($location);
 
-        // 3. Generate File Path
-        // path: {owner_type}/{owner_id}/{year}/{filename}
-        $ownerType = $data['owner_type']; // enum value
+        // 3. Generate Path
+        $ownerType = $data['owner_type']; 
         $ownerId = $data['owner_id'];
         $extension = $file->getClientOriginalExtension();
         $filename = Str::uuid() . '.' . $extension;
         $path = "{$ownerType}/{$ownerId}/" . date('Y');
-        
-        // 4. Store File
+
+        // 4. Upload
         $storagePath = Storage::disk($diskName)->putFileAs($path, $file, $filename);
 
-        if (!$storagePath) {
-            throw new Exception("Failed to upload file to {$location->name}.");
-        }
+        if (!$storagePath) throw new Exception("Failed to upload to {$storageType}");
 
-        // 5. Get URL (depends on visibility)
-        // For private docs, we might not want a public URL immediately, but for now:
-        $url = Storage::disk($diskName)->url($storagePath);
-
-        // 6. Save to Database
+        // 5. Save Metadata
         return Document::create([
             'document_type_id' => $data['document_type_id'],
             'document_location_id' => $location->id,
             'org_id' => $data['org_id'] ?? null,
             'company_id' => $data['company_id'] ?? null,
-            'user_id' => auth()->id(), // Uploader
+            'user_id' => auth()->id(),
             'owner_type' => $ownerType,
             'owner_id' => $ownerId,
-            'doc_url' => $storagePath, // Store relative path for portability
+            'doc_url' => $storagePath,
             'document_name' => $data['document_name'] ?? $file->getClientOriginalName(),
             'document_size' => $file->getSize(),
             'document_extension' => $extension,
@@ -68,26 +53,84 @@ class DocumentService
     }
 
     /**
-     * Configure Laravel filesystem disk dynamically based on DB config.
+     * Get Document Logic
+     */
+    public function getDocument(int $id): ?Document
+    {
+        return Document::with(['location', 'type', 'uploader', 'organization', 'company'])->find($id);
+    }
+    
+    /**
+     * Get All Documents Logic
+     */
+    public function getAllDocuments(): \Illuminate\Database\Eloquent\Collection
+    {
+        return Document::with(['location', 'type'])->latest()->get();
+    }
+
+    /**
+     * Update Document Metadata (File replacement is complex, usually a new upload)
+     */
+    public function updateDocumentMetadata(int $id, array $data): Document
+    {
+        $document = Document::findOrFail($id);
+        $document->update([
+            'document_name' => $data['document_name'] ?? $document->document_name,
+            'document_type_id' => $data['document_type_id'] ?? $document->document_type_id,
+        ]);
+        return $document;
+    }
+
+    /**
+     * Delete Document
+     */
+    public function deleteDocument(int $id): bool
+    {
+        $document = Document::findOrFail($id);
+        $location = $document->location;
+        
+        // Configure disk to delete file
+        $diskName = $this->configureDisk($location);
+        
+        if (Storage::disk($diskName)->exists($document->doc_url)) {
+            Storage::disk($diskName)->delete($document->doc_url);
+        }
+
+        return $document->delete();
+    }
+
+    /**
+     * Get View/Download URL
+     */
+    public function getDocumentUrl(Document $document): string
+    {
+        $location = $document->location;
+        $diskName = $this->configureDisk($location);
+
+        if ($location->slug === 'local') {
+            return Storage::disk('public')->url($document->doc_url);
+        }
+
+        // S3/Wasabi Presigned
+        return Storage::disk($diskName)->temporaryUrl(
+            $document->doc_url, now()->addMinutes(60)
+        );
+    }
+
+    /**
+     * Configure Dynamic Disk
      */
     protected function configureDisk(DocumentLocation $location): string
     {
         $diskName = 'dynamic_disk_' . $location->slug;
 
         if ($location->slug === 'local') {
-            $config = $location->localConfig;
-            if (!$config) throw new Exception("Local configuration not found.");
-
-            // We use the 'public' disk but separate root or just standard public
-            // For simplicity, we stick to standard 'public' or separate 'local' disk
-            // If custom root is needed:
-            // Config::set("filesystems.disks.{$diskName}", [ ... ]);
-            return 'public'; // Using standard public disk for local for now
+            return 'public'; // Simplify to standard public disk
         }
 
         if ($location->slug === 'wasabi') {
             $config = $location->wasabiConfig;
-            if (!$config) throw new Exception("Wasabi configuration not found.");
+            if (!$config) throw new Exception("Wasabi config missing");
 
             Config::set("filesystems.disks.{$diskName}", [
                 'driver' => 's3',
@@ -103,7 +146,7 @@ class DocumentService
 
         if ($location->slug === 'aws') {
             $config = $location->awsConfig;
-            if (!$config) throw new Exception("AWS configuration not found.");
+            if (!$config) throw new Exception("AWS config missing");
 
             Config::set("filesystems.disks.{$diskName}", [
                 'driver' => 's3',
@@ -116,25 +159,6 @@ class DocumentService
             return $diskName;
         }
 
-        throw new Exception("Unsupported storage location: {$location->slug}");
-    }
-
-    /**
-     * Get a temporary URL for downloading/viewing
-     */
-    public function getDocumentUrl(Document $document): string
-    {
-        $location = $document->location;
-        $diskName = $this->configureDisk($location);
-
-        // If local public
-        if ($location->slug === 'local') {
-            return Storage::disk('public')->url($document->doc_url);
-        }
-
-        // If S3/Wasabi (presigned url for specific time)
-        return Storage::disk($diskName)->temporaryUrl(
-            $document->doc_url, now()->addMinutes(60)
-        );
+        return 'public';
     }
 }
