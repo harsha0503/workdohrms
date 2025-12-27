@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\DocumentOwnerType;
 
 class DocumentType extends Model
 {
@@ -15,11 +16,27 @@ class DocumentType extends Model
         'notes',
         'is_active',
         'tenant_id',
+        'owner_type_id', // Changed to ID
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'owner_type_id' => 'integer',
     ];
+
+    // Helper to get Enum from ID
+    public function getOwnerTypeAttribute()
+    {
+        // Reverse mapping or logic to get Enum from ID if needed
+        // For simple storage, we just keep the ID. 
+        // If you want the Enum object:
+        foreach(DocumentOwnerType::cases() as $case) {
+            if ($case->id() === $this->owner_type_id) {
+                return $case;
+            }
+        }
+        return null;
+    }
 
     public function documents()
     {

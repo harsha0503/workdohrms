@@ -16,4 +16,13 @@ enum DocumentOwnerType: string
             self::Accountant => 'Accountant',
         };
     }
+
+    public function id(): int
+    {
+        return match($this) {
+            self::Employee => 1,
+            self::Company => 2,
+            self::Accountant => 3,
+        };
+    }
 }
